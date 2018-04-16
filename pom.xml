@@ -10,12 +10,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>edu.princeton.cup</groupId>
+            <groupId>com.github.vbmacher</groupId>
             <artifactId>java-cup</artifactId>
-            <version>10k</version>
+            <version>11b</version>
         </dependency>
         <dependency>
-            <groupId>de.jflex</groupId>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup-runtime</artifactId>
+            <version>11b</version>
+        </dependency>
+        <dependency>
+        <groupId>de.jflex</groupId>
             <artifactId>jflex</artifactId>
             <version>1.6.1</version>
         </dependency>
@@ -29,14 +34,16 @@
                 <version>1.6.1</version>
                 <executions>
                     <execution>
+                        <id>verificator</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/main/resources/jflex/${Interpritator}.flex</lexDefinition>
+                                <lexDefinition>src/main/resources/jflex/Verificator.flex</lexDefinition>
+                                <lexDefinition>src/main/resources/jflex/RefalFive.flex</lexDefinition>
                             </lexDefinitions>
-                            <outputDirectory>src/main/java/${Interpritator}Interpritator</outputDirectory>
+                            <outputDirectory>src/main/java</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

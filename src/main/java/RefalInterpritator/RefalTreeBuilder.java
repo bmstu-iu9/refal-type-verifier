@@ -1,7 +1,8 @@
 package RefalInterpritator;
 
-import java_cup.parser;
-import java_cup.runtime.*;
+import com.sun.java_cup.internal.runtime.Scanner;
+import com.sun.java_cup.internal.runtime.Symbol;
+import com.sun.java_cup.internal.runtime.lr_parser;
 import jdk.nashorn.internal.parser.Lexer;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RefalTreeBuilder extends parser {
+public class RefalTreeBuilder extends lr_parser {
 
     public RefalTreeBuilder(Scanner scanner) {
         super(scanner);

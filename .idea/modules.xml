@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/refalStaticVerificator.iml" filepath="$PROJECT_DIR$/refalStaticVerificator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/main.iml" filepath="$PROJECT_DIR$/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/refal-static-verificator.iml" filepath="$PROJECT_DIR$/refal-static-verificator.iml" />
     </modules>
   </component>
 </project>

@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="refalStaticVerificator" />
+        <module name="refal-static-verificator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="refalStaticVerificator" target="1.8" />
+      <module name="refal-static-verificator" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
