@@ -1,0 +1,8 @@
+*.class
+target/
+screencasts/
+*.log
+*.iml
+.idea/
+*.war
+*.ear

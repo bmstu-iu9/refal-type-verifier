@@ -1,0 +1,104 @@
+package refal;
+
+import java_cup.runtime.*;
+
+parser code {:
+public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append( "("+ info.toString()+")" );
+
+    m.append(" : "+message);
+
+    System.out.println(m);
+  }
+
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:}
+
+
+/* Terminals (tokens returned by the scanner). */
+terminal LexerToken SEMICOLON, COLON;
+terminal LexerToken EXTERN, ENTRY, LBRACE, RBRACE, EQUAL;
+terminal LexerToken LPAREN, RPAREN, NAME, LCHEVRON, RCHEVRON, QUOTEDSTRING, INTEGER_LITERAL;
+terminal LexerToken VARIABLE, COMMA;
+
+/* Non terminals */
+non terminal Node expression, term, program, f_definition, external_decl, f_name_list, block, sentence;
+non terminal Node left_side, conditions, arg, result, right_side;
+non terminal Node paren_result_term, chevron_result_term, block_ending, lefts;
+
+precedence left EQUAL, VARIABLE, NAME, QUOTEDSTRING, INTEGER_LITERAL, LPAREN;
+precedence right COLON, EXTERN;
+precedence right COMMA;
+/* The grammar rules */
+start with program;
+
+term ::= VARIABLE:st {:RESULT = new Node(st.name);:}
+       | QUOTEDSTRING:st {:RESULT = new Node(st.name);:}
+       | INTEGER_LITERAL:st {:RESULT = new Node(st.name);:}
+       | NAME:st {:RESULT = new Node(st.name);:}
+       | LPAREN expression RPAREN {:RESULT = new Node("PARENS");:}
+       | LPAREN RPAREN{:RESULT = new Node("PARENS");:};
+
+paren_result_term ::= LPAREN result RPAREN
+		    | LPAREN RPAREN;
+
+chevron_result_term ::= LCHEVRON result RCHEVRON;
+
+block_ending ::= arg COLON LBRACE block RBRACE;
+
+right_side ::= VARIABLE:st {:RESULT = new Node(st.name);:}
+             | QUOTEDSTRING:st {:RESULT = new Node(st.name);:}
+             | INTEGER_LITERAL:st {:RESULT = new Node(st.name);:}
+	     | NAME:st {:RESULT = new Node(st.name);:}
+             | paren_result_term {:RESULT = new Node("PARENS");:}
+             | chevron_result_term{:RESULT = new Node("CHEVRONS");:};
+
+arg ::= right_side;
+
+expression ::= term
+	     | term expression;
+
+result ::= right_side
+         | right_side result;
+
+external_decl ::= EXTERN f_name_list;
+
+f_name_list ::= NAME:st {:RESULT = new Node(st.name);:}
+              | NAME:st COMMA f_name_list{:RESULT = new Node(st.name);:};
+
+conditions ::= COMMA arg COLON expression
+	     | COMMA arg COLON expression conditions;
+
+left_side ::= term
+	    | term left_side;
+
+lefts ::= left_side conditions
+        | conditions;
+
+sentence ::= lefts COMMA block_ending
+           | lefts EQUAL result
+	   | left_side COMMA block_ending
+           | left_side EQUAL result
+	   | lefts EQUAL
+	   | left_side EQUAL
+	   | EQUAL result
+	   | EQUAL;
+
+block ::= sentence
+        | sentence SEMICOLON
+        | sentence SEMICOLON block;
+
+f_definition ::= NAME:st LBRACE block RBRACE{:RESULT = new Node(st.name);:}
+               | ENTRY NAME:st LBRACE block RBRACE{:RESULT = new Node(st.name);:};
+
+program ::= f_definition
+          | f_definition program
+          | f_definition SEMICOLON program
+          | external_decl SEMICOLON program
+	  | program external_decl SEMICOLON;

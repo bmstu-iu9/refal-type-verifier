@@ -1,0 +1,77 @@
+package verificator;
+
+import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
+
+parser code {:
+public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append( "("+info.toString()+")" );
+
+    m.append(" : "+message);
+
+    System.out.println(m);
+  }
+
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:}
+
+
+/* Terminals (tokens returned by the scanner). */
+terminal LexerToken LPAREN, RPAREN, NAME, LCHEVRON, RCHEVRON, SEMICOLON, OR;
+terminal LexerToken VAREQUAL, EQUAL, VARIABLE, METAVARIABLE, MANY, ATLEAST, QUOTEDSTRING, INTEGER_LITERAL;
+
+/* Non terminals */
+non terminal Node spec, type_def, func, simple_types, args_type, simple_type, stretch_type, term_type, res, f_simple_type, n_simple_type, end_type;
+/* The grammar rules */
+
+precedence left RPAREN, LPAREN, METAVARIABLE, VARIABLE, NAME, MANY;
+
+start with spec;
+
+spec ::= type_def spec
+     | func spec
+     |;
+
+type_def ::= VARIABLE:st VAREQUAL simple_types SEMICOLON {:RESULT = new Node(st.name, st.start);:};
+
+simple_types ::= f_simple_type
+               | f_simple_type n_simple_type;
+
+f_simple_type ::= simple_type;
+
+n_simple_type ::= OR simple_type
+                | OR simple_type n_simple_type;
+
+simple_type ::= term_type
+            | stretch_type;
+
+stretch_type ::= term_type MANY {:RESULT = new Node("MANY", -1);:}
+             | term_type ATLEAST;
+
+term_type ::= end_type
+          | end_type term_type
+          | LPAREN simple_type RPAREN {:RESULT = new Node("PARENS", -1);:}
+          | LPAREN simple_type RPAREN MANY {:RESULT = new Node("PARENS", -1);:}
+          | LPAREN simple_type RPAREN ATLEAST {:RESULT = new Node("PARENS", -1);:};
+
+end_type ::= VARIABLE:st {:RESULT = new Node(st.name, st.start);:}
+           | METAVARIABLE:st {:RESULT = new Node(st.name, st.start);:}
+           | NAME:st {:RESULT = new Node(st.name, st.start);:}
+           | INTEGER_LITERAL:st {:RESULT = new Node(st.name, st.start);:}
+           | QUOTEDSTRING:st {:RESULT = new Node(st.name, st.start);:};
+
+
+func ::= LCHEVRON NAME args_type RCHEVRON res SEMICOLON {:RESULT = new Node("FUNC", -1);:};
+
+args_type ::= simple_type
+            |;
+
+res ::= EQUAL simple_type
+    | EQUAL simple_type res
+    | EQUAL;
