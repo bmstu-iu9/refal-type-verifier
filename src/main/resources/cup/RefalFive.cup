@@ -1,4 +1,4 @@
-package refal;
+package RefalInterpritator;
 
 import java_cup.runtime.*;
 
