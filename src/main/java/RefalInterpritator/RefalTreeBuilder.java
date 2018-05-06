@@ -1,6 +1,5 @@
 package RefalInterpritator;
 
-import java_cup.parser;
 import java_cup.runtime.Symbol;
 
 import java.util.ArrayList;

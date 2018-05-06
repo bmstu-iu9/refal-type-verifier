@@ -1,8 +1,6 @@
 package VerificatorInterpritator;
 
-import java_cup.parser;
 import java_cup.runtime.*;
-import jdk.nashorn.internal.parser.Lexer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

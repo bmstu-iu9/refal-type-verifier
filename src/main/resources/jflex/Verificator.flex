@@ -1,8 +1,11 @@
 ﻿package VerificatorInterpritator;
 
+import java_cup.runtime.Symbol;
+
 %%
 
 %class VerificatorLexer
+%public
 %unicode
 %line
 %column

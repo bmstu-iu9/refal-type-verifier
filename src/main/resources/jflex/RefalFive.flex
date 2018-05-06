@@ -1,8 +1,11 @@
 ﻿package RefalInterpritator;
 
+import java_cup.runtime.Symbol;
+
 %%
 
 %class RefalFiveLexer
+%public
 %unicode
 %line
 %column
