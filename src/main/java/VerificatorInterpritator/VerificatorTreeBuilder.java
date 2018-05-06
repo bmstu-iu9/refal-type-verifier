@@ -31,7 +31,7 @@ public class VerificatorTreeBuilder extends parser {
       int act;
       String tree = "-";
       Map<Symbol, Boolean> usedByParser = new HashMap<>();
-      VerificatorNode curNode = new VerificatorNode(new Lexer.LexerToken("START"));
+      VerificatorNode curNode = new VerificatorNode(new LexerToken("START"));
       start = curNode;
       /* the Symbol/stack element returned by a reduce */
       Symbol lhs_sym = null;

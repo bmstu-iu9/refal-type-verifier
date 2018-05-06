@@ -15,6 +15,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/java-cup-11a.jar</systemPath>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>sampliest</groupId>
@@ -22,6 +23,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/java-cup-11a-runtime.jar</systemPath>
+            <type>jar</type>
         </dependency>
         <dependency>
         <groupId>de.jflex</groupId>

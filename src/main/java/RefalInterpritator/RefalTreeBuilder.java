@@ -1,9 +1,7 @@
 package RefalInterpritator;
 
-import com.sun.java_cup.internal.runtime.Scanner;
-import com.sun.java_cup.internal.runtime.Symbol;
-import com.sun.java_cup.internal.runtime.lr_parser;
-import jdk.nashorn.internal.parser.Lexer;
+import java_cup.parser;
+import java_cup.runtime.Symbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RefalTreeBuilder extends lr_parser {
+public class RefalTreeBuilder extends parser {
 
-    public RefalTreeBuilder(Scanner scanner) {
-        super(scanner);
-    }
 
     private RefalNode start;
     private List<RefalNode> functions = new ArrayList<>();
@@ -27,7 +22,7 @@ public class RefalTreeBuilder extends lr_parser {
       int act;
       String tree = "-";
       Map<Symbol, Boolean> usedByParser = new HashMap<>();
-      RefalNode curNode = new RefalNode(new Lexer.LexerToken("START"));
+      RefalNode curNode = new RefalNode(new LexerToken("START"));
       start = curNode;
       /* the Symbol/stack element returned by a reduce */
       Symbol lhs_sym = null;
