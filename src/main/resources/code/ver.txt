@@ -1,0 +1,5 @@
+t.Num ::= NULL | (S t.Num);
+
+<Sum t.Num t.Num> == t.Num;
+<Mul1 t.Num t.Num> == t.Num;
+<Fact t.Num> == t.Num;
