@@ -35,9 +35,7 @@ public class RefalNode {
         final String[] ans = {name.name};
         if(childs.size() != 0) {
                 ans[0] += "[\n";
-                        childs.forEach(node -> {
-                       ans[0] +=" " + node.toString();
-                       });
+                        childs.forEach(node -> ans[0] +=" " + node.toString());
         ans[0] += "]";
         }
         return ans[0] + " ";

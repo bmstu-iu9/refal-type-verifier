@@ -9,25 +9,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>sample</groupId>-->
-            <!--<artifactId>com.sample</artifactId>-->
-            <!--<version>1.0</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/src/main/resources/java-cup-11a.jar</systemPath>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>sampliest</groupId>-->
-            <!--<artifactId>com.sampliest</artifactId>-->
-            <!--<version>1.0</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/src/main/resources/java-cup-11a-runtime.jar</systemPath>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>net.sourceforge.czt.dev</groupId>-->
-            <!--<artifactId>java-cup-runtime</artifactId>-->
-            <!--<version>0.11-a-czt01</version>-->
-        <!--</dependency>-->
         <dependency>
         <groupId>com.github.vbmacher</groupId>
         <artifactId>java-cup-runtime</artifactId>
@@ -38,32 +19,11 @@
         <artifactId>jflex</artifactId>
         <version>1.6.1</version>
     </dependency>
-        <!--<dependency>-->
-        <!--<groupId>net.sourceforge.czt</groupId>-->
-        <!--<artifactId>maven-cup-plugin</artifactId>-->
-        <!--<version>1.6.4</version>-->
-    <!--</dependency>-->
 
     </dependencies>
     <build>
 
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>net.sourceforge.czt</groupId>-->
-                <!--<artifactId>cup-maven-plugin</artifactId>-->
-                <!--<version>1.6.4</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>generate</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<sourceDirectory>src/main/resources/cup</sourceDirectory>-->
-                            <!--<outputDirectory>src/main/java</outputDirectory>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>com.github.vbmacher</groupId>
                 <artifactId>cup-maven-plugin</artifactId>

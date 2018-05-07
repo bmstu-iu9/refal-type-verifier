@@ -1,5 +1,6 @@
 package RefalInterpritator;
 
+import java_cup.runtime.Scanner;
 import java_cup.runtime.Symbol;
 
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ public class RefalTreeBuilder extends parser {
 
     private RefalNode start;
     private List<RefalNode> functions = new ArrayList<>();
+
+    public RefalTreeBuilder(Scanner scanner) {
+    	super(scanner);
+	}
 
     @Override
     public Symbol parse() throws Exception
@@ -47,14 +52,12 @@ public class RefalTreeBuilder extends parser {
       /* push dummy Symbol with start state to get us underway */
       stack.removeAllElements();
       stack.push(getSymbolFactory().startSymbol("START", 0, start_state()));
-      //System.out.print("-");
       tos = 0;
       int j = 0;
       boolean isFunc = false;
       /* continue until we are told to stop */
       for (_done_parsing = false; !_done_parsing; )
 	{
-	    //System.out.println("1");
 	  /* Check current token for freshness. */
 	  if (usedByParser.get(cur_token))
 	    throw new Error("Symbol recycling detected (fix your scanner).");
@@ -67,40 +70,73 @@ public class RefalTreeBuilder extends parser {
 	  /* decode the action -- > 0 encodes shift */
 	  if (act > 0)
 	    {
-	    //System.out.println(j);
 	      /* shift to the encoded state by pushing it on the stack */
 	      cur_token.parse_state = act-1;
           usedByParser.put(cur_token, true);
 	      stack.push(cur_token);
-	      System.out.println(cur_token);
-	      if(cur_token.sym == 6) {
-            j++;
-            curNode = curNode.getLastChild();
-              functions.add(curNode);
-	      }
-	      if(cur_token.sym == 10 || cur_token.sym == 13 || cur_token.sym == 2 || cur_token.sym == 7) {
-            curNode = curNode.getParen();
-	      }
-	      if(cur_token.sym == 12) {
-            curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
-            curNode = curNode.getLastChild();
-
-	      }
-	      if(cur_token.sym == 11 || cur_token.sym == 16 || cur_token.sym == 14 || cur_token.sym == 15) {
-                curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
-	      }
-	      if(cur_token.sym == 8) {
-            curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
-            curNode = curNode.getLastChild();
-	      }
-	      if(cur_token.sym == 9) {
-            curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
-            curNode = curNode.getLastChild();
-	      }
-	      if(cur_token.sym == 17) {
-            curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
-            curNode = curNode.getLastChild();
-	      }
+	      switch (cur_token.sym) {
+              case sym.LBRACE:
+                  j++;
+                  curNode = curNode.getLastChild();
+                  functions.add(curNode);
+                  break;
+              case sym.RBRACE:
+              case sym.RPAREN:
+              case sym.RCHEVRON:
+              case sym.SEMICOLON:
+                  curNode = curNode.getParen();
+                  break;
+              case sym.LCHEVRON:
+                  curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
+                  curNode = curNode.getLastChild();
+                  break;
+              case sym.NAME:
+              case sym.QUOTEDSTRING:
+              case sym.INTEGER_LITERAL:
+              case sym.VARIABLE:
+                  curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
+                  break;
+              case sym.EQUAL:
+                  curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
+                  curNode = curNode.getLastChild();
+                  break;
+              case sym.LPAREN:
+                  curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
+                  curNode = curNode.getLastChild();
+                  break;
+              case sym.COMMA:
+                  curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
+                  curNode = curNode.getLastChild();
+                  break;
+          }
+//	      if(cur_token.sym == 6) {
+//              j++;
+//              curNode = curNode.getLastChild();
+//              functions.add(curNode);
+//	      }
+//	      if(cur_token.sym == 10 || cur_token.sym == 13 || cur_token.sym == 2 || cur_token.sym == 7) {
+//            curNode = curNode.getParen();
+//	      }
+//	      if(cur_token.sym == 12) {
+//            curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
+//            curNode = curNode.getLastChild();
+//
+//	      }
+//	      if(cur_token.sym == 11 || cur_token.sym == 16 || cur_token.sym == 14 || cur_token.sym == 15) {
+//                curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
+//	      }
+//	      if(cur_token.sym == 8) {
+//            curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
+//            curNode = curNode.getLastChild();
+//	      }
+//	      if(cur_token.sym == 9) {
+//            curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
+//            curNode = curNode.getLastChild();
+//	      }
+//	      if(cur_token.sym == 17) {
+//            curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
+//            curNode = curNode.getLastChild();
+//	      }
 	      tree+="-";
 	      tos++;
 
@@ -133,7 +169,7 @@ public class RefalTreeBuilder extends parser {
 	      lhs_sym.parse_state = act;
           usedByParser.put(lhs_sym, true);
 	      stack.push(lhs_sym);
-	      //tree+="-";
+	      tree+="-";
 	      tos++;
 	    }
 	  /* finally if the entry is zero, we have an error */
