@@ -5,9 +5,7 @@
 
 package VerificatorInterpritator;
 
-import java_cup.runtime.*;
-import java_cup.runtime.Symbol;
-import java_cup.runtime.XMLElement;
+import VerificatorInterpritator.Tokens.LexerToken;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */

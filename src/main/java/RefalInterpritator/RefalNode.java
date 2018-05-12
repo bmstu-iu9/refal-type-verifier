@@ -1,5 +1,8 @@
 package RefalInterpritator;
 
+import RefalInterpritator.Tokens.LexerToken;
+import VerificatorInterpritator.VerificatorNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +50,10 @@ public class RefalNode {
 
     public List<RefalNode> getChilds() {
         return childs;
+    }
+
+    public boolean equals(VerificatorNode verificatorNode) {
+        return this.getName().equals(verificatorNode.getName());
     }
 }
 

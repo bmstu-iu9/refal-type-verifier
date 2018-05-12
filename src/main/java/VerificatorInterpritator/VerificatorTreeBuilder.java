@@ -1,5 +1,6 @@
 package VerificatorInterpritator;
 
+import VerificatorInterpritator.Tokens.LexerToken;
 import java_cup.runtime.*;
 
 import java.util.ArrayList;
@@ -81,42 +82,80 @@ public class VerificatorTreeBuilder extends parser {
 	      cur_token.parse_state = act-1;
           usedByParser.put(cur_token, true);
 	      stack.push(cur_token);
-	      if(cur_token.sym == 2) {
-            curNode.addChild(new VerificatorNode(new LexerToken("PARENS")).setParen(curNode));
-              curNode = curNode.getLastChild();
-	      }
-	      if(cur_token.sym == 4) {
-            if(isFunc) {
-                isFunc = false;
-                curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
-                curNode = curNode.getLastChild();
-                functions.add(curNode);
-                curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
-                curNode = curNode.getLastChild();
-            } else {
-                curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
-            }
-	      }
-	      if(cur_token.sym == 5) {
-                isFunc = true;
-	      }
-	      if(cur_token.sym == 9) {
-            j++;
-            curNode = curNode.getLastChild();
-              typeDef.add(curNode);
-	      }
-	      if(cur_token.sym == 11 || cur_token.sym == 12 || cur_token.sym == 15 || cur_token.sym == 16) {
-              curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
-	      }
-	      if (cur_token.sym == 13) {
-              curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
+	      switch (cur_token.sym) {
+              case sym.LPAREN:
+                  curNode.addChild(new VerificatorNode(new LexerToken("PARENS")).setParen(curNode));
+                  curNode = curNode.getLastChild();
+                  break;
+              case sym.NAME:
+                  if(isFunc) {
+                      isFunc = false;
+                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+                      curNode = curNode.getLastChild();
+                      functions.add(curNode);
+                      curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
+                      curNode = curNode.getLastChild();
+                  } else {
+                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+                  }
+                  break;
+              case sym.LCHEVRON:
+                  isFunc = true;
+                  break;
+              case sym.VAREQUAL:
+                  j++;
+                  curNode = curNode.getLastChild();
+                  typeDef.add(curNode);
+                  break;
+              case sym.VARIABLE:
+              case sym.METAVARIABLE:
+              case sym.QUOTEDSTRING:
+              case sym.INTEGER_LITERAL:
+                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+                  break;
+              case sym.MANY:
+                  curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
+                  break;
+              case sym.RCHEVRON:
+                  curNode = curNode.getParen();
+                  break;
           }
-	      tree+="-";
-	      tos++;
-	      if (cur_token.sym == 6) {
-	          curNode = curNode.getParen();
-          }
+//	      if(cur_token.sym == 2) {
+//            curNode.addChild(new VerificatorNode(new LexerToken("PARENS")).setParen(curNode));
+//              curNode = curNode.getLastChild();
+//	      }
+//	      if(cur_token.sym == 4) {
+//            if(isFunc) {
+//                isFunc = false;
+//                curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//                curNode = curNode.getLastChild();
+//                functions.add(curNode);
+//                curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
+//                curNode = curNode.getLastChild();
+//            } else {
+//                curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//            }
+//	      }
+//	      if(cur_token.sym == 5) {
+//                isFunc = true;
+//	      }
+//	      if(cur_token.sym == 9) {
+//            j++;
+//            curNode = curNode.getLastChild();
+//              typeDef.add(curNode);
+//	      }
+//	      if(cur_token.sym == 11 || cur_token.sym == 12 || cur_token.sym == 15 || cur_token.sym == 16) {
+//              curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//	      }
+//	      if (cur_token.sym == 13) {
+//              curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
+//          }
+//	      tree+="-";
+//	      if (cur_token.sym == 6) {
+//	          curNode = curNode.getParen();
+//          }
 	      /* advance to the next Symbol */
+	      tos++;
 	      cur_token = scan();
           usedByParser.put(cur_token, false);
 	    }

@@ -1,4 +1,4 @@
-package RefalInterpritator;
+package VerificatorInterpritator.Tokens;
 
 public class LexerToken {
 
@@ -10,6 +10,7 @@ public class LexerToken {
 
     public LexerToken(String name) {
         this.name = name;
+        this.start = start;
     }
 }
 

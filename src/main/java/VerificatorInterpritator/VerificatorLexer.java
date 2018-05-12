@@ -1,5 +1,6 @@
 package VerificatorInterpritator;
 
+import VerificatorInterpritator.Tokens.LexerToken;
 import java_cup.runtime.Symbol;
 
 

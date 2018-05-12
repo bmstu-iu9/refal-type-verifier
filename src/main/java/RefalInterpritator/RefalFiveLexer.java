@@ -1,5 +1,6 @@
 package RefalInterpritator;
 
+import RefalInterpritator.Tokens.LexerToken;
 import java_cup.runtime.Symbol;
 
 

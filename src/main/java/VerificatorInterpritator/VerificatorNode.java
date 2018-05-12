@@ -1,5 +1,7 @@
 package VerificatorInterpritator;
 
+import VerificatorInterpritator.Tokens.LexerToken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,5 +51,17 @@ public class VerificatorNode {
 
     public List<VerificatorNode> getChilds() {
         return childs;
+    }
+
+    public VerificatorNode getArguments() {
+        return childs.get(0);
+    }
+
+    public VerificatorNode getResult() {
+        return  childs.get(1);
+    }
+
+    public boolean equals(VerificatorNode verificatorNode) {
+        return this.getName().equals(verificatorNode.getName());
     }
 }
