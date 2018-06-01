@@ -110,34 +110,6 @@ public class RefalTreeBuilder extends parser {
                   curNode = curNode.getLastChild();
                   break;
           }
-//	      if(cur_token.sym == 6) {
-//              j++;
-//              curNode = curNode.getLastChild();
-//              functions.add(curNode);
-//	      }
-//	      if(cur_token.sym == 10 || cur_token.sym == 13 || cur_token.sym == 2 || cur_token.sym == 7) {
-//            curNode = curNode.getParen();
-//	      }
-//	      if(cur_token.sym == 12) {
-//            curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
-//            curNode = curNode.getLastChild();
-//
-//	      }
-//	      if(cur_token.sym == 11 || cur_token.sym == 16 || cur_token.sym == 14 || cur_token.sym == 15) {
-//                curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
-//	      }
-//	      if(cur_token.sym == 8) {
-//            curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
-//            curNode = curNode.getLastChild();
-//	      }
-//	      if(cur_token.sym == 9) {
-//            curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
-//            curNode = curNode.getLastChild();
-//	      }
-//	      if(cur_token.sym == 17) {
-//            curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
-//            curNode = curNode.getLastChild();
-//	      }
 	      tree+="-";
 	      tos++;
 

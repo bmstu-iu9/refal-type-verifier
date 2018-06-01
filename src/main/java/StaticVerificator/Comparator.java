@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Comparator {
 
-    private static Map<RefalNode, VerificatorNode> compares = new HashMap<>();
+    private static Map<String, String> compares = new HashMap<>();
 
     private VerificatorTreeBuilder verificatorTree;
 
@@ -34,7 +34,7 @@ public class Comparator {
         for (int i = 0; i < verificatorNode.getChilds().size(); i++) {
             if (refalNode.getName().equals("PARENS") && verificatorNode.getChilds().get(i).getName().equals("PARENS")) {
                 return compareNodes(refalNode.getChilds(), verificatorNode.getChilds().get(i));
-            } else if (refalNode.getName().equals(verificatorNode.getChilds().get(i).getName())) {
+            } else if (refalNode.equals(verificatorNode.getChilds().get(i))) {
                 return true;
             }
         }
@@ -45,13 +45,13 @@ public class Comparator {
         for (int i = 0; i < verificatorNode.getChilds().size(); i++) {
             if (refalNode.getName().equals("PARENS") && verificatorNode.getChilds().get(i).getName().equals("PARENS")) {
                 return compareNodes(refalNode.getChilds(), verificatorNode.getChilds().get(i));
-            } else if (refalNode.getName().equals(verificatorNode.getChilds().get(i).getName())) {
+            } else if (refalNode.equals(verificatorNode.getChilds().get(i))) {
                 return true;
             }
         }
         int i = 0;
         for (; i < verificatorTree.getTypeDef().size(); i++) {
-            if (verificatorTree.getTypeDef().get(i).getName().equals(verificatorNode.getName())) {
+            if (verificatorTree.getTypeDef().get(i).equals(verificatorNode)) {
                 break;
             }
         }
@@ -70,7 +70,7 @@ public class Comparator {
                 int j = 0;
                 if (refalNode.get(i).getName().length() > 2 && refalNode.get(i).getName().charAt(1) == '.' || refalNode.get(i).getName().equals("PARENS")) {
                     while (j < verificatorTree.getTypeDef().size()
-                            && !verificatorTree.getTypeDef().get(j).getName().equals(verificatorNode.getChilds().get(i).getName())) {
+                            && !verificatorTree.getTypeDef().get(j).equals(verificatorNode.getChilds().get(i))) {
                         j++;
                     }
                     if (j == verificatorTree.getTypeDef().size()) {
@@ -81,7 +81,7 @@ public class Comparator {
                     }
                 }
             }
-            compares.put(refalNode.get(i), verificatorNode.getChilds().get(i));
+            compares.put(refalNode.get(i).getName(), verificatorNode.getChilds().get(i).getName());
         }
         return true;
     }
@@ -141,7 +141,7 @@ public class Comparator {
                 if(compareResultNodes(refalNode.getChilds(), verificatorNode.getChilds().get(i))) {
                     return true;
                 }
-            } else if (refalNode.getName().equals(verificatorNode.getChilds().get(i))) {
+            } else if (refalNode.equals(verificatorNode.getChilds().get(i))) {
                 return true;
             }
         }
@@ -195,7 +195,7 @@ public class Comparator {
 
     private boolean checkFunc(RefalNode refalNode) {
         VerificatorNode function = getFunction(refalNode);
-        if(function == null || !compareResultNodes(refalNode.getChilds().subList(1, refalNode.getChilds().size()), function.getChilds().get(0))) {
+        if(function == null || !compareResultNodes(refalNode.getChilds().subList(1, refalNode.getChilds().size()), function.getArguments())) {
             System.out.println("Err 2");
             return false;
         }
