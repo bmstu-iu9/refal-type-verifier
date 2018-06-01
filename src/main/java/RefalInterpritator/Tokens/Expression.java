@@ -1,9 +1,24 @@
 package RefalInterpritator.Tokens;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Expression {
-    public List<Term> terms;
+    private List<Term> terms;
+    private Expression parent;
+
+    public Expression() {
+        terms = new ArrayList<>();
+    }
+
+    public Expression getParent() {
+        return parent;
+    }
+
+    public Expression setParent(Expression parent) {
+        this.parent = parent;
+        return this;
+    }
 
     public List<Term> getTerms() {
         return terms;
@@ -16,5 +31,11 @@ public class Expression {
 
     public Term getLastTerm() {
         return terms.get(terms.size() - 1);
+    }
+
+    public String toString() {
+        final String[] ans = {""};
+        terms.forEach(term -> ans[0] = ans[0] + term.toString() + " ");
+        return ans[0];
     }
 }

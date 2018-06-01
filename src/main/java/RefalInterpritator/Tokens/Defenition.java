@@ -36,4 +36,18 @@ public class Defenition {
     public Sentence getLastSentence() {
         return sentences.get(sentences.size() - 1);
     }
+
+    public String toString() {
+        final String[] ans = {""};
+        if (isEntry) {
+            ans[0] += "$ENTRY ";
+        }
+        if(name == null) {
+            return ans[0];
+        }
+        ans[0] += name;
+        ans[0] += "{\n";
+        sentences.forEach(sentence -> ans[0] = ans[0] + sentence.toString() );
+        return ans[0]+"\n}\n";
+    }
 }

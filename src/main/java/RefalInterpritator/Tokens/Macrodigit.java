@@ -6,4 +6,8 @@ public class Macrodigit extends Term {
     public Macrodigit(String value) {
         this.value = Integer.valueOf(value);
     }
+
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

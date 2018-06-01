@@ -1,5 +1,5 @@
 package RefalInterpritator.Tokens;
 
 
-public class Term extends LexerToken {
+public abstract class Term {
 }

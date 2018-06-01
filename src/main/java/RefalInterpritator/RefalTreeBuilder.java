@@ -29,7 +29,7 @@ public class RefalTreeBuilder extends parser {
       String tree = "-";
       Map<Symbol, Boolean> usedByParser = new HashMap<>();
       RefalNode curNode = new RefalNode(new LexerToken("START"));
-      List<Term> currentExpression = new ArrayList<>();
+      Expression currentExpression = new Expression();
       start = curNode;
       defenitions.add(new Defenition());
       /* the Symbol/stack element returned by a reduce */
@@ -81,54 +81,73 @@ public class RefalTreeBuilder extends parser {
 	      switch (cur_token.sym) {
               case sym.ENTRY:
                   getLastDefinition().setEntry(true);
+                  break;
               case sym.LBRACE:
                   j++;
-                  curNode = curNode.getLastChild();
-                  functions.add(curNode);
+                  currentExpression = new Expression();
+                  //curNode = curNode.getLastChild();
+//                  functions.add(curNode);
                   break;
               case sym.RBRACE:
+                  defenitions.add(new Defenition());
+                  break;
               case sym.RPAREN:
+                  ((StructBrackets)currentExpression.getParent().getLastTerm()).setContent(currentExpression.getTerms());
+                  currentExpression = currentExpression.getParent();
+                  break;
               case sym.RCHEVRON:
+                  ((CallBrackets)currentExpression.getParent().getLastTerm()).setContent(currentExpression.getTerms());
+                  currentExpression = currentExpression.getParent();
+                  break;
               case sym.SEMICOLON:
                   getLastDefinition().getLastSentence().setResult(currentExpression);
-                  currentExpression = new ArrayList<>();
+                  currentExpression = new Expression();
                   getLastDefinition().getSentences().add(new Sentence());
-                  curNode = curNode.getParen();
-                  break;
-              case sym.LCHEVRON:
-                  curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
-                  curNode = curNode.getLastChild();
+                  System.out.println();
+//                  curNode = curNode.getParen();
                   break;
               case sym.NAME:
                   if(getLastDefinition().getName() == null) {
-                      getLastDefinition().setName(curNode.getName());
+                      getLastDefinition().setName(((LexerToken)cur_token.value).name);
                       getLastDefinition().getSentences().add(new Sentence());
+                  } else if (currentExpression.getParent() != null && currentExpression.getParent().getLastTerm() instanceof CallBrackets) {
+                      ((CallBrackets) currentExpression.getParent().getLastTerm()).setName(((LexerToken)cur_token.value).name);
+                  } else {
+                      currentExpression.getTerms().add(new CompoundSymbol(((LexerToken)cur_token.value).name));
                   }
                   break;
               case sym.QUOTEDSTRING:
-                  currentExpression.add(new CompoundSymbol(((LexerToken)cur_token.value).name));
+                  currentExpression.getTerms().add(new CompoundSymbol(((LexerToken)cur_token.value).name));
                   break;
               case sym.INTEGER_LITERAL:
-                  currentExpression.add(new Macrodigit(((LexerToken)cur_token.value).name));
+                  currentExpression.getTerms().add(new Macrodigit(((LexerToken)cur_token.value).name));
                   break;
               case sym.VARIABLE:
-                  currentExpression.add(new Variable(((LexerToken)cur_token.value).name));
-                  curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
+                  currentExpression.getTerms().add(new Variable(((LexerToken)cur_token.value).name));
+//                  curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
                   break;
               case sym.EQUAL:
+                  System.out.print(currentExpression);
                   getLastDefinition().getLastSentence().setPattern(currentExpression);
-                  currentExpression = new ArrayList<>();
-                  curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
-                  curNode = curNode.getLastChild();
+                  currentExpression = new Expression();
+//                  curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
+//                  curNode = curNode.getLastChild();
+                  break;
+              case sym.LCHEVRON:
+                  currentExpression.getTerms().add(new CallBrackets());
+                  currentExpression = new Expression().setParent(currentExpression);
+//                  curNode.addChild(new RefalNode(new LexerToken("FUNC")).setParen(curNode));
+//                  curNode = curNode.getLastChild();
                   break;
               case sym.LPAREN:
-                  currentExpression.add(new StructBrackets());
-                  curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
-                  curNode = curNode.getLastChild();
+                  currentExpression.getTerms().add(new StructBrackets());
+                  currentExpression = new Expression().setParent(currentExpression);
+//                  curNode.addChild(new RefalNode(new LexerToken("PARENS")).setParen(curNode));
+//                  curNode = curNode.getLastChild();
                   break;
               case sym.COMMA:
-                  curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
-                  curNode = curNode.getLastChild();
+//                  curNode.addChild(new RefalNode(new LexerToken("CONDITIONS")).setParen(curNode));
+//                  curNode = curNode.getLastChild();
                   break;
           }
 	      tree+="-";
@@ -188,8 +207,8 @@ public class RefalTreeBuilder extends parser {
       return lhs_sym;
     }
 
-    public RefalNode getStart() {
-        return start;
+    public List<Defenition> getStart() {
+        return defenitions;
     }
 
     public List<RefalNode> getFunctions() {

@@ -12,8 +12,8 @@ public class Sentence {
         return pattern;
     }
 
-    public void setPattern(List<Term> pattern) {
-        this.pattern = new Expression().setTerms(pattern);
+    public void setPattern(Expression pattern) {
+        this.pattern = pattern;
     }
 
     public List<Condition> getConditions() {
@@ -28,8 +28,8 @@ public class Sentence {
         return result;
     }
 
-    public void setResult(List<Term> result) {
-        this.result = new Expression().setTerms(result);
+    public void setResult(Expression result) {
+        this.result = result;
     }
 
     public List<Sentence> getBlock() {
@@ -38,5 +38,16 @@ public class Sentence {
 
     public void setBlock(List<Sentence> block) {
         this.block = block;
+    }
+
+    public String toString() {
+        if(pattern == null) {
+            return "";
+        }
+        String ans = "";
+        ans += pattern.toString();
+        ans += " = ";
+        ans += result.toString();
+        return ans + ";\n";
     }
 }

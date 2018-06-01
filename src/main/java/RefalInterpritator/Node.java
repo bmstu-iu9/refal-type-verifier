@@ -10,7 +10,7 @@ public class Node {
     }
 
     public Node(String a1) {
-        System.out.println("Node2 " + a1);
+        //System.out.println("Node2 " + a1);
     }
 }
 
