@@ -12,14 +12,14 @@ import java.io.FileReader;
 public class Verificator {
     public static void main(String[] args) throws FileNotFoundException {
         VerificatorTreeBuilder verificatorTree = new VerificatorTreeBuilder(new VerificatorLexer(new FileReader(args[0])));
-        RefalTreeBuilder refalTree = new RefalTreeBuilder(new RefalFiveLexer(new FileReader(args[1])));
+//        RefalTreeBuilder refalTree = new RefalTreeBuilder(new RefalFiveLexer(new FileReader(args[1])));
         try {
-            refalTree.parse();
+//            refalTree.parse();
             verificatorTree.parse();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(refalTree.getStart());
+//        System.out.println(refalTree.getStart());
         System.out.println(verificatorTree.getStart());
         Comparator comparator = new Comparator(verificatorTree);
 //        refalTree.getFunctions().forEach(refalNode -> {
