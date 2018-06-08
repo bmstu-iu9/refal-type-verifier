@@ -10,7 +10,13 @@ public class FixedType extends SimpleType {
         return terms;
     }
 
-    public void setTerms(List<TermType> terms) {
+    public FixedType setTerms(List<TermType> terms) {
         this.terms = terms;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "" + terms;
     }
 }

@@ -21,6 +21,8 @@ public class Verificator {
         }
 //        System.out.println(refalTree.getStart());
         System.out.println(verificatorTree.getStart());
+        System.out.println(verificatorTree.getTypes());
+        System.out.println(verificatorTree.getFuncs());
         Comparator comparator = new Comparator(verificatorTree);
 //        refalTree.getFunctions().forEach(refalNode -> {
 //            int j = 0;

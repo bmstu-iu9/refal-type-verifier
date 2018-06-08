@@ -6,4 +6,8 @@ public class Compound extends Symbol{
     public Compound(String value) {
         this.value = value;
     }
+
+    public String toString() {
+        return value;
+    }
 }

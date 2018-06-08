@@ -31,4 +31,11 @@ public class Function {
     public void setResult(List<SimpleType> result) {
         this.result = result;
     }
+
+    public String toString() {
+        final String[] ans = {""};
+        ans[0] = "<" + name + " " + argument.toString() + "> == ";
+        result.stream().forEach(simpleType -> ans[0] = ans[0] + " " + simpleType.toString());
+        return ans[0];
+    }
 }

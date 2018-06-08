@@ -6,4 +6,9 @@ public class Number extends Symbol {
     public Number(String value) {
         this.value = Integer.valueOf(value);
     }
+
+    @Override
+    public String toString() {
+        return "" + value;
+    }
 }

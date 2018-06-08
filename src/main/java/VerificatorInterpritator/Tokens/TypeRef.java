@@ -38,4 +38,13 @@ public class TypeRef extends SimpleType{
     public void setRef(Type ref) {
         this.ref = ref;
     }
+
+    @Override
+    public String toString() {
+        return "TypeRef{" +
+                "mode=" + mode +
+                ", name='" + name + '\'' +
+                ", ref=" + ref +
+                '}';
+    }
 }

@@ -6,4 +6,8 @@ public class Character extends Symbol{
     public Character(char value) {
         this.value = value;
     }
+
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

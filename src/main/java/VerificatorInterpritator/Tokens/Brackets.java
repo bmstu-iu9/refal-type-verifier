@@ -1,17 +1,19 @@
 package VerificatorInterpritator.Tokens;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Brackets extends SimpleType {
+public class Brackets extends TermType {
     private List<SimpleType> content = new ArrayList<>();
 
     public List<SimpleType> getContent() {
         return content;
     }
 
-    public void setContent(List<SimpleType> content) {
+    public Brackets setContent(List<SimpleType> content) {
         this.content = content;
+        return this;
     }
 
     public String toString() {

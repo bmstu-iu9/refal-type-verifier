@@ -38,4 +38,13 @@ public class VarTermType extends TermType{
     public void setRef(Type ref) {
         this.ref = ref;
     }
+
+    @Override
+    public String toString() {
+        return "VarTermType{" +
+                "mode=" + mode +
+                ", name='" + name + '\'' +
+                ", ref=" + ref +
+                '}';
+    }
 }

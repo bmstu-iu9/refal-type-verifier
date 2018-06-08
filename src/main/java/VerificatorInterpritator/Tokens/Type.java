@@ -43,4 +43,13 @@ public class Type {
     public void setConstructors(List<SimpleType> constructors) {
         this.constructors = constructors;
     }
+
+    @Override
+    public String toString() {
+        return "Type{" +
+                "mode=" + mode +
+                ", name='" + name + '\'' +
+                ", constructors=" + constructors +
+                '}';
+    }
 }
