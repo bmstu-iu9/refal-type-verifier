@@ -44,7 +44,6 @@ public class TypeRef extends SimpleType{
         return "TypeRef{" +
                 "mode=" + mode +
                 ", name='" + name + '\'' +
-                ", ref=" + ref +
                 '}';
     }
 }

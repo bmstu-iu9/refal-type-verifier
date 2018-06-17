@@ -1,4 +1,4 @@
-t.Num ::= NULL | (S t.Num) | t.Num t.Num;
+t.Num ::= NULL | (S t.Num) | s.NUMBER t.Num;
 s.Yum ::= t.Num;
 
 <Sum t.Num t.Num> == t.Num;

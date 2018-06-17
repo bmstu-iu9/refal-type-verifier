@@ -7,6 +7,15 @@ public class Type {
     private String name;
     private List<SimpleType> constructors;
 
+    public Type(String value) {
+        setMode(value.charAt(0));
+        this.name = value.substring(2);
+    }
+
+    public Type() {
+
+    }
+
     public Mode getMode() {
         return mode;
     }

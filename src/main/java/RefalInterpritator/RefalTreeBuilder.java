@@ -89,6 +89,7 @@ public class RefalTreeBuilder extends parser {
 //                  functions.add(curNode);
                   break;
               case sym.RBRACE:
+                  getLastDefinition().getSentences().remove(getLastDefinition().getSentences().size() - 1);
                   defenitions.add(new Defenition());
                   break;
               case sym.RPAREN:
@@ -103,7 +104,7 @@ public class RefalTreeBuilder extends parser {
                   getLastDefinition().getLastSentence().setResult(currentExpression);
                   currentExpression = new Expression();
                   getLastDefinition().getSentences().add(new Sentence());
-                  System.out.println();
+//                  System.out.println();
 //                  curNode = curNode.getParen();
                   break;
               case sym.NAME:
@@ -127,7 +128,7 @@ public class RefalTreeBuilder extends parser {
 //                  curNode.addChild(new RefalNode((LexerToken)cur_token.value).setParen(curNode));
                   break;
               case sym.EQUAL:
-                  System.out.print(currentExpression);
+//                  System.out.print(currentExpression);
                   getLastDefinition().getLastSentence().setPattern(currentExpression);
                   currentExpression = new Expression();
 //                  curNode.addChild(new RefalNode(new LexerToken("VARS")).setParen(curNode));
@@ -207,7 +208,7 @@ public class RefalTreeBuilder extends parser {
       return lhs_sym;
     }
 
-    public List<Defenition> getStart() {
+    public List<Defenition> getDefenition() {
         return defenitions;
     }
 

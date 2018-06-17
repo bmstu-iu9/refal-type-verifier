@@ -24,6 +24,7 @@ public class VerificatorTreeBuilder extends parser {
     private List<Type> types = new ArrayList<>();
     private boolean isFunction = false;
     private boolean isStretch = false;
+    private List<Type> baseTypes = new ArrayList<>();
 
     public List<VerificatorNode> getTypeDef() {
         return typeDef;
@@ -32,6 +33,12 @@ public class VerificatorTreeBuilder extends parser {
     @Override
     public Symbol parse() throws Exception
     {
+        baseTypes.add(new Type("s.NUMBER"));
+        baseTypes.add(new Type("s.COMPOUND"));
+        baseTypes.add(new Type("s.CHAR"));
+        baseTypes.add(new Type("s.ANY"));
+        baseTypes.add(new Type("t.ANY"));
+        baseTypes.add(new Type("e.ANY"));
       /* the current action code */
       int act;
       String tree = "-";
@@ -99,7 +106,11 @@ public class VerificatorTreeBuilder extends parser {
                   curNode = curNode.getLastChild();
                   break;
               case sym.RPAREN:
-                  ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(currentSimple.getCurrentSimples()));
+                  if (isStretch) {
+                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getRight().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
+                  } else {
+                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
+                  }
                   currentSimple.getCurrentSimples().set(currentSimple.getCurrentSimples().size() - 1, stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = currentSimple.getParrent();
                   break;
@@ -116,7 +127,12 @@ public class VerificatorTreeBuilder extends parser {
                       curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
                       curNode = curNode.getLastChild();
                   } else {
-                      ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new Compound(((LexerToken)cur_token.value).name));
+                      if (isStretch) {
+                          ((StretchType)currentSimple.getLastSimpleType()).getRight().add(new Compound(((LexerToken)cur_token.value).name));
+                      } else {
+                          ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new Compound(((LexerToken)cur_token.value).name));
+                      }
+
                       curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   }
                   break;
@@ -138,12 +154,23 @@ public class VerificatorTreeBuilder extends parser {
                       types.get(types.size() - 1).setMode(((LexerToken)cur_token.value).name.charAt(0));
                       types.get(types.size() - 1).setName(((LexerToken)cur_token.value).name.substring(2));
                   } else {
-                      ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new VarTermType(((LexerToken)cur_token.value).name));
+                      if (isStretch) {
+                          ((StretchType)currentSimple.getLastSimpleType()).getRight().add(new VarTermType(((LexerToken)cur_token.value).name));
+                          if(!checkVarTermDefinition ((VarTermType)((StretchType)currentSimple.getLastSimpleType()).getRight().get(((StretchType)currentSimple.getLastSimpleType()).getRight().size() - 1))) {
+                              System.out.println("Undefaind variable " + ((StretchType)currentSimple.getLastSimpleType()).getRight().get(((StretchType)currentSimple.getLastSimpleType()).getRight().size() - 1));
+                          }
+                      } else {
+                          ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new VarTermType(((LexerToken)cur_token.value).name));
+                          if(!checkVarTermDefinition ((VarTermType)((StretchType)currentSimple.getLastSimpleType()).getLeft().get(((StretchType)currentSimple.getLastSimpleType()).getLeft().size() - 1))) {
+                              System.out.println("Undefaind variable " + ((StretchType)currentSimple.getLastSimpleType()).getLeft().get(((StretchType)currentSimple.getLastSimpleType()).getLeft().size() - 1));
+                          }
+                      }
                   }
               case sym.METAVARIABLE:
               case sym.QUOTEDSTRING:
               case sym.INTEGER_LITERAL:
                   // ???
+                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   break;
               case sym.MANY:
@@ -152,7 +179,7 @@ public class VerificatorTreeBuilder extends parser {
                   curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
                   break;
               case sym.RCHEVRON:
-                  System.out.println(funcs.get(funcs.size() - 1).getName());
+//                  System.out.println(funcs.get(funcs.size() - 1).getName());
                   funcs.get(funcs.size() - 1).setArgument(stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = new HelpExpression();
                   curNode = curNode.getParen();
@@ -268,5 +295,23 @@ public class VerificatorTreeBuilder extends parser {
         ans.add(new FixedType().setTerms(stretchType.getLeft()));
         return ans;
     }
+
+    public boolean checkVarTermDefinition(VarTermType varTermType) {
+        for (int i = 0; i < types.size(); i++) {
+            if (types.get(i).getName().equals(varTermType.getName()) && types.get(i).getMode() == varTermType.getMode()) {
+                varTermType.setRef(types.get(i));
+                return true;
+            }
+        }
+        for (int i = 0; i < baseTypes.size(); i++) {
+            if (baseTypes.get(i).getName().equals(varTermType.getName()) && baseTypes.get(i).getMode() == varTermType.getMode()) {
+                varTermType.setRef(baseTypes.get(i));
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+
 

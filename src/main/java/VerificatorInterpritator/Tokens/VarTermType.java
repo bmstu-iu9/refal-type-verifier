@@ -31,6 +31,14 @@ public class VarTermType extends TermType{
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Type getRef() {
         return ref;
     }
@@ -44,7 +52,6 @@ public class VarTermType extends TermType{
         return "VarTermType{" +
                 "mode=" + mode +
                 ", name='" + name + '\'' +
-                ", ref=" + ref +
                 '}';
     }
 }

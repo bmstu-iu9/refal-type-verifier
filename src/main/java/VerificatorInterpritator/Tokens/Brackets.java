@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Brackets extends TermType {
-    private List<SimpleType> content = new ArrayList<>();
+    private SimpleType content;
 
-    public List<SimpleType> getContent() {
+    public SimpleType getContent() {
         return content;
     }
 
-    public Brackets setContent(List<SimpleType> content) {
+    public Brackets setContent(SimpleType content) {
         this.content = content;
         return this;
     }
 
     public String toString() {
         final String[] ans = {"("};
-        content.forEach(term -> ans[0] = ans[0] + term.toString() + " ");
+        System.out.println(content.toString());
+        ans[0] += content.toString();
         ans[0] += ")";
         return ans[0];
     }
