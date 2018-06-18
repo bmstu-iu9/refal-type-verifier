@@ -9,9 +9,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 public class Verificator {
-    public static void main(String[] args) throws FileNotFoundException {
-        VerificatorTreeBuilder verificatorTree = new VerificatorTreeBuilder(new VerificatorLexer(new FileReader(args[0])));
-        RefalTreeBuilder refalTree = new RefalTreeBuilder(new RefalFiveLexer(new FileReader(args[1])));
+    public static void main(String[] args) {
+        try {
+            verify(args[1], args[0]);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void verify(String refal_file, String type_file) throws FileNotFoundException {
+        VerificatorTreeBuilder verificatorTree = new VerificatorTreeBuilder(new VerificatorLexer(new FileReader(type_file)));
+        RefalTreeBuilder refalTree = new RefalTreeBuilder(new RefalFiveLexer(new FileReader(refal_file)));
         try {
             refalTree.parse();
             verificatorTree.parse();

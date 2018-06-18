@@ -12,3 +12,8 @@ $ENTRY Fact {
   NULL = (S NULL);
   (S t.Num) = <Mul1 <Fact t.Num> (S t.Num)>;
 }
+
+Split {
+  e.Line '\n' e.Text = (e.Line) <Split e.Text>;
+  e.Line = (e.Line);
+}
