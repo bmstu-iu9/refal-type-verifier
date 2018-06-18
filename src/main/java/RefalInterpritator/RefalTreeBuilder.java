@@ -15,7 +15,7 @@ public class RefalTreeBuilder extends parser {
 
     private RefalNode start;
     private List<RefalNode> functions = new ArrayList<>();
-    private List<Defenition> defenitions = new ArrayList<>();
+    private List<Definition> definitions = new ArrayList<>();
 
     public RefalTreeBuilder(Scanner scanner) {
     	super(scanner);
@@ -31,7 +31,7 @@ public class RefalTreeBuilder extends parser {
       RefalNode curNode = new RefalNode(new LexerToken("START"));
       Expression currentExpression = new Expression();
       start = curNode;
-      defenitions.add(new Defenition());
+      definitions.add(new Definition());
       /* the Symbol/stack element returned by a reduce */
       Symbol lhs_sym = null;
 
@@ -90,7 +90,7 @@ public class RefalTreeBuilder extends parser {
                   break;
               case sym.RBRACE:
                   getLastDefinition().getSentences().remove(getLastDefinition().getSentences().size() - 1);
-                  defenitions.add(new Defenition());
+                  definitions.add(new Definition());
                   break;
               case sym.RPAREN:
                   ((StructBrackets)currentExpression.getParent().getLastTerm()).setContent(currentExpression.getTerms());
@@ -208,16 +208,16 @@ public class RefalTreeBuilder extends parser {
       return lhs_sym;
     }
 
-    public List<Defenition> getDefenition() {
-        return defenitions;
+    public List<Definition> getDefenition() {
+        return definitions;
     }
 
     public List<RefalNode> getFunctions() {
         return functions;
     }
 
-    private Defenition getLastDefinition() {
-        return defenitions.get(defenitions.size() - 1);
+    private Definition getLastDefinition() {
+        return definitions.get(definitions.size() - 1);
     }
 }
 

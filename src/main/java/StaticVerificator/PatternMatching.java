@@ -19,10 +19,10 @@ public class PatternMatching {
         isUsed = new HashMap<>();
     }
 
-    public boolean match(Defenition defenition, Function function) {
-        for (int i = 0; i < defenition.getSentences().size(); i++) {
-            if (!matchLeftPart(defenition.getSentences().get(i).getPattern(), function.getArgument())
-                    || !matchRightPart(defenition.getSentences().get(i).getResult(), function.getResult())) {
+    public boolean match(Definition definition, Function function) {
+        for (int i = 0; i < definition.getSentences().size(); i++) {
+            if (!matchLeftPart(definition.getSentences().get(i).getPattern(), function.getArgument())
+                    || !matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
             }
         }

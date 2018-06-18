@@ -3,11 +3,13 @@ package RefalInterpritator.Tokens;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Defenition {
+public class Definition {
 
     private boolean isEntry;
     private List<Sentence> sentences = new ArrayList<>();
     private String name;
+
+    private VerificatorInterpritator.Tokens.Function func_type;
 
     public String getName() {
         return name;
@@ -49,5 +51,13 @@ public class Defenition {
         ans[0] += "{\n";
         sentences.forEach(sentence -> ans[0] = ans[0] + sentence.toString() );
         return ans[0]+"\n}\n";
+    }
+
+    public void setType(VerificatorInterpritator.Tokens.Function type) {
+        this.func_type = type;
+    }
+
+    public VerificatorInterpritator.Tokens.Function getType() {
+        return this.func_type;
     }
 }

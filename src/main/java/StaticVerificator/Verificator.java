@@ -44,9 +44,13 @@ public class Verificator {
                     break;
                 }
             }
-        if (i == verificatorTree.getFuncs().size() && function.getName() != null) {
+
+            assert(function.getName() != null);
+            if (i == verificatorTree.getFuncs().size()) {
                 System.out.println("No function declaration:" + function.getName());
             }
+
+            function.setType(verificatorTree.getFuncs().get(i));
         });
         System.out.println("Semantic test done");
         PatternMatching patternMatching = new PatternMatching(verificatorTree.getFuncs(), verificatorTree.getTypes());
