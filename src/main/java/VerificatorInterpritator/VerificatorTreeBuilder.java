@@ -109,7 +109,7 @@ public class VerificatorTreeBuilder extends parser {
                   if (isStretch) {
                       ((StretchType)currentSimple.getParrent().getLastSimpleType()).getRight().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
                   } else {
-                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
+                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(currentSimple.getLastSimpleType()));
                   }
                   currentSimple.getCurrentSimples().set(currentSimple.getCurrentSimples().size() - 1, stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = currentSimple.getParrent();

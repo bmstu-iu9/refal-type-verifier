@@ -3,16 +3,20 @@ package StaticVerificator;
 import RefalInterpritator.Tokens.*;
 import VerificatorInterpritator.Tokens.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PatternMatching {
 
     private List<Function> functions;
     private List<Type> types;
+    private Map<Type, Boolean> isUsed;
 
     public PatternMatching(List<Function> functions, List<Type> types) {
         this.functions = functions;
         this.types = types;
+        isUsed = new HashMap<>();
     }
 
     public boolean match(Defenition defenition, Function function) {
@@ -42,13 +46,13 @@ public class PatternMatching {
     public boolean matchExpressionAndSimpleType(List<Term> expression, SimpleType simpleType) {
         if (simpleType instanceof FixedType) {
             for (int i = 0; i < expression.size(); i++) {
-                if (matchTermAndTermType(expression.get(i), simpleType)) {
-                    return true;
+                types.forEach(type -> isUsed.put(type, false));
+                if (!matchTermAndTermType(expression.get(i), simpleType)) {
+                    return false;
                 }
             }
         }
-        System.out.println("2");
-        return false;
+        return true;
     }
 
     public boolean matchTermAndTermType(Term term, SimpleType simpleType) {
@@ -91,10 +95,17 @@ public class PatternMatching {
             }
         }
         return false;
-
     }
 
     private boolean matchTermAndVarTerm(Term symbol, VarTermType varTermType) {
+        if(varTermType.getRef().getConstructors() == null) {
+            return false;
+        }
+        if (!isUsed.get(varTermType.getRef())) {
+            isUsed.put(varTermType.getRef(), true);
+        } else {
+            return false;
+        }
         for (int i = 0; i < varTermType.getRef().getConstructors().size(); i++) {
             if (matchTermAndTermType(symbol, varTermType.getRef().getConstructors().get(i))) {
                 return true;
