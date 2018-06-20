@@ -30,7 +30,7 @@ terminal LexerToken VAREQUAL, EQUAL, VARIABLE, METAVARIABLE, MANY, ATLEAST, QUOT
 non terminal Node spec, type_def, func, simple_types, args_type, simple_type, stretch_type, term_type, res, f_simple_type, n_simple_type, end_type;
 /* The grammar rules */
 
-precedence left RPAREN, LPAREN, METAVARIABLE, VARIABLE, NAME, MANY;
+precedence left RPAREN, LPAREN, METAVARIABLE, VARIABLE, NAME, MANY, INTEGER_LITERAL, QUOTEDSTRING;
 
 start with spec;
 
@@ -51,7 +51,8 @@ n_simple_type ::= OR simple_type
 simple_type ::= term_type
             | stretch_type;
 
-stretch_type ::= term_type MANY {:RESULT = new Node("MANY", -1);:}
+stretch_type ::= term_type MANY term_type {:RESULT = new Node("MANY", -1);:}
+             | term_type MANY {:RESULT = new Node("MANY", -1);:}
              | term_type ATLEAST;
 
 term_type ::= end_type

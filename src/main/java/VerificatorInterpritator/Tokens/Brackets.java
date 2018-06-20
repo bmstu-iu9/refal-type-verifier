@@ -1,9 +1,5 @@
 package VerificatorInterpritator.Tokens;
 
-import java.text.BreakIterator;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Brackets extends TermType {
     private SimpleType content;
 
@@ -17,10 +13,9 @@ public class Brackets extends TermType {
     }
 
     public String toString() {
-        final String[] ans = {"("};
-        System.out.println(content.toString());
+        final String[] ans = {"!("};
         ans[0] += content.toString();
-        ans[0] += ")";
+        ans[0] += ")!";
         return ans[0];
     }
 }

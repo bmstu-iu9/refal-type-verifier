@@ -1,13 +1,10 @@
 package VerificatorInterpritator;
 
 import VerificatorInterpritator.Tokens.*;
-import java_cup.runtime.*;
+import java_cup.runtime.Scanner;
 import java_cup.runtime.Symbol;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class VerificatorTreeBuilder extends parser {
@@ -24,6 +21,7 @@ public class VerificatorTreeBuilder extends parser {
     private List<Type> types = new ArrayList<>();
     private boolean isFunction = false;
     private boolean isStretch = false;
+    Stack<Boolean> isStr;
     private List<Type> baseTypes = new ArrayList<>();
 
     public List<VerificatorNode> getTypeDef() {
@@ -41,11 +39,13 @@ public class VerificatorTreeBuilder extends parser {
         baseTypes.add(new Type("e.ANY"));
       /* the current action code */
       int act;
+        isStr = new Stack<>();
+        isStr.push(false);
       String tree = "-";
       Map<Symbol, Boolean> usedByParser = new HashMap<>();
-      VerificatorNode curNode = new VerificatorNode(new LexerToken("START"));
+//      VerificatorNode curNode = new VerificatorNode(new LexerToken("START"));
       types.add(new Type());
-      start = curNode;
+//      start = curNode;
       /* the Symbol/stack element returned by a reduce */
       Symbol lhs_sym = null;
 
@@ -101,17 +101,21 @@ public class VerificatorTreeBuilder extends parser {
               case sym.LPAREN:
                   currentSimple = new HelpExpression().setParrent(currentSimple);
                   currentSimple.getCurrentSimples().add(new StretchType());
-
-                  curNode.addChild(new VerificatorNode(new LexerToken("PARENS")).setParen(curNode));
-                  curNode = curNode.getLastChild();
+                  isStr.push(false);
+//
+//                  curNode.addChild(new VerificatorNode(new LexerToken("PARENS")).setParen(curNode));
+//                  curNode = curNode.getLastChild();
                   break;
               case sym.RPAREN:
-                  if (isStretch) {
+                  isStr.pop();
+                  System.out.println(isStr.peek());
+                  if (isStr.peek()) {
                       ((StretchType)currentSimple.getParrent().getLastSimpleType()).getRight().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
                   } else {
-                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(currentSimple.getLastSimpleType()));
+                      ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0)));
                   }
-                  currentSimple.getCurrentSimples().set(currentSimple.getCurrentSimples().size() - 1, stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
+                  System.out.println(currentSimple.getCurrentSimples());
+//                  currentSimple.getCurrentSimples().set(currentSimple.getCurrentSimples().size() - 1, stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = currentSimple.getParrent();
                   break;
               case sym.NAME:
@@ -121,19 +125,19 @@ public class VerificatorTreeBuilder extends parser {
                       currentSimple.getCurrentSimples().add(new StretchType());
 
                       isFunc = false;
-                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
-                      curNode = curNode.getLastChild();
-                      functions.add(curNode);
-                      curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
-                      curNode = curNode.getLastChild();
+//                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//                      curNode = curNode.getLastChild();
+//                      functions.add(curNode);
+//                      curNode.addChild(new VerificatorNode(new LexerToken("ARGS")).setParen(curNode));
+//                      curNode = curNode.getLastChild();
                   } else {
-                      if (isStretch) {
+                      if (isStr.peek()) {
                           ((StretchType)currentSimple.getLastSimpleType()).getRight().add(new Compound(((LexerToken)cur_token.value).name));
                       } else {
                           ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new Compound(((LexerToken)cur_token.value).name));
                       }
 
-                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//                      curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   }
                   break;
               case sym.LCHEVRON:
@@ -146,15 +150,15 @@ public class VerificatorTreeBuilder extends parser {
                   j++;
                   currentSimple = new HelpExpression();
                   currentSimple.getCurrentSimples().add(new StretchType());
-                  curNode = curNode.getLastChild();
-                  typeDef.add(curNode);
+//                  curNode = curNode.getLastChild();
+//                  typeDef.add(curNode);
                   break;
               case sym.VARIABLE:
                   if (types.get(types.size() - 1).getName() == null && !isFunction) {
                       types.get(types.size() - 1).setMode(((LexerToken)cur_token.value).name.charAt(0));
                       types.get(types.size() - 1).setName(((LexerToken)cur_token.value).name.substring(2));
                   } else {
-                      if (isStretch) {
+                      if (isStr.peek()) {
                           ((StretchType)currentSimple.getLastSimpleType()).getRight().add(new VarTermType(((LexerToken)cur_token.value).name));
                           if(!checkVarTermDefinition ((VarTermType)((StretchType)currentSimple.getLastSimpleType()).getRight().get(((StretchType)currentSimple.getLastSimpleType()).getRight().size() - 1))) {
                               System.out.println("Undefaind variable " + ((StretchType)currentSimple.getLastSimpleType()).getRight().get(((StretchType)currentSimple.getLastSimpleType()).getRight().size() - 1));
@@ -170,19 +174,21 @@ public class VerificatorTreeBuilder extends parser {
               case sym.QUOTEDSTRING:
               case sym.INTEGER_LITERAL:
                   // ???
-                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
-                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
+//                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   break;
               case sym.MANY:
+                  System.out.println(currentSimple.getCurrentSimples());
                   ((StretchType)currentSimple.getLastSimpleType()).lastIsStretch();
-                  isStretch = true;
-                  curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
+                  isStr.pop();
+                  isStr.push(true);
+//                  curNode.addChild(new VerificatorNode(new LexerToken("MANY")).setParen(curNode));
                   break;
               case sym.RCHEVRON:
 //                  System.out.println(funcs.get(funcs.size() - 1).getName());
                   funcs.get(funcs.size() - 1).setArgument(stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = new HelpExpression();
-                  curNode = curNode.getParen();
+//                  curNode = curNode.getParen();
                   break;
               case sym.SEMICOLON:
                   if (isFunction) {
@@ -214,9 +220,9 @@ public class VerificatorTreeBuilder extends parser {
 	        //j--;
 	      /* perform the action for the reduce */
 	      //System.out.print(tree);
-	      if(-act-1 == 18 || -act-1 == 17 || -act-1 == 16 || -act-1 == 4 || -act-1 == 24) {
-            curNode = curNode.getParen();
-	      }
+//	      if(-act-1 == 18 || -act-1 == 17 || -act-1 == 16 || -act-1 == 4 || -act-1 == 24) {
+//            curNode = curNode.getParen();
+//	      }
 	      lhs_sym = do_action((-act)-1, this, stack, tos);
 	      //System.out.println("!!!!!!");
 	      /* look up information about the production */
@@ -287,18 +293,20 @@ public class VerificatorTreeBuilder extends parser {
 
     private List<SimpleType> stretchOrFixed(StretchType stretchType) {
         List<SimpleType> ans = new ArrayList<>();
-        if (isStretch) {
-            isStretch = false;
+        if (isStr.peek()) {
+            isStr.pop();
+            isStr.push(false);
             ans.add(stretchType);
             return ans;
         }
         ans.add(new FixedType().setTerms(stretchType.getLeft()));
+        System.out.println(stretchType);
         return ans;
     }
 
     public boolean checkVarTermDefinition(VarTermType varTermType) {
         for (int i = 0; i < types.size(); i++) {
-            if (types.get(i).getName().equals(varTermType.getName()) && types.get(i).getMode() == varTermType.getMode()) {
+            if (types.get(i).getName() != null && types.get(i).getName().equals(varTermType.getName()) && types.get(i).getMode() == varTermType.getMode()) {
                 varTermType.setRef(types.get(i));
                 return true;
             }

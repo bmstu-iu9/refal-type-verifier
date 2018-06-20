@@ -33,7 +33,7 @@ public class StretchType extends SimpleType {
     }
 
     public String toString() {
-        return "" + left + "* " + stretch + right;
+        return "" + left + " " + stretch + "* " + right;
     }
 
     public void lastIsStretch() {

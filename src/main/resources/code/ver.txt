@@ -1,10 +1,4 @@
-t.Num ::= NULL | (S t.Num);
+t.Num ::= NULL | t.Num ;
 
-e.Line ::= {s.CHAR};
-e.Text ::= { (e.Line) };
-
-<Sum t.Num t.Num> == t.Num;
-<Mul1 t.Num t.Num> == t.Num;
-<Fact t.Num> == t.Num;
-
-<Split e.Line> == e.Text;
+e.Line ::= s.CHAR;
+e.Text ::= (e.Line*);
