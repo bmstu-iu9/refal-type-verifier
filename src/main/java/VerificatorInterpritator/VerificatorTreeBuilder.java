@@ -109,13 +109,13 @@ public class VerificatorTreeBuilder extends parser {
               case sym.RPAREN:
                   SimpleType bracketsContent = stretchOrFixed((StretchType)currentSimple.getLastSimpleType()).get(0);
                   isStr.pop();
-                  System.out.println(isStr.peek());
+//                  System.out.println(isStr.peek());
                   if (isStr.peek()) {
                       ((StretchType)currentSimple.getParrent().getLastSimpleType()).getRight().add(new Brackets().setContent(bracketsContent));
                   } else {
                       ((StretchType)currentSimple.getParrent().getLastSimpleType()).getLeft().add(new Brackets().setContent(bracketsContent));
                   }
-                  System.out.println(currentSimple.getCurrentSimples());
+//                  System.out.println(currentSimple.getCurrentSimples());
 //                  currentSimple.getCurrentSimples().set(currentSimple.getCurrentSimples().size() - 1, stretchOrFixed((StretchType) currentSimple.getLastSimpleType()).get(0));
                   currentSimple = currentSimple.getParrent();
                   break;
@@ -179,7 +179,7 @@ public class VerificatorTreeBuilder extends parser {
 //                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
                   break;
               case sym.MANY:
-                  System.out.println(currentSimple.getCurrentSimples());
+//                  System.out.println(currentSimple.getCurrentSimples());
                   ((StretchType)currentSimple.getLastSimpleType()).lastIsStretch();
                   isStr.pop();
                   isStr.push(true);
@@ -301,7 +301,7 @@ public class VerificatorTreeBuilder extends parser {
             return ans;
         }
         ans.add(new FixedType().setTerms(stretchType.getLeft()));
-        System.out.println(stretchType);
+//        System.out.println(stretchType);
         return ans;
     }
 

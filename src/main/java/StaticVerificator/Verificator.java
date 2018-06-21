@@ -32,7 +32,7 @@ public class Verificator {
 //        System.out.println("!!!!");
 //        System.out.println(refalTree.getDefenition());
 //        System.out.println("!!!!");
-        System.out.println(verificatorTree.getTypes());
+//        System.out.println(verificatorTree.getTypes());
 //        System.out.println("!!!!");
 //        System.out.println(verificatorTree.getFuncs());
 //        System.out.println("!!!!");

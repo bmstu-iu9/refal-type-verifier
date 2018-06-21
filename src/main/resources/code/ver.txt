@@ -1,4 +1,6 @@
-t.Num ::= NULL | t.Num | (s.CHAR);
+t.Num ::= NULL | (S t.Num);
+t.Yum ::= s.ANY;
 
-e.Line ::= s.CHAR;
-e.Text ::= (e.Line*)*;
+<Sum t.Num t.Yum> == t.Num;
+<Mul1 t.Num t.Yum> == t.Num;
+<Fact t.Num> == t.Num;
