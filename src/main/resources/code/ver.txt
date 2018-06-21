@@ -1,4 +1,4 @@
-t.Num ::= NULL | t.Num ;
+t.Num ::= NULL | t.Num | (s.CHAR);
 
 e.Line ::= s.CHAR;
-e.Text ::= (e.Line*);
+e.Text ::= (e.Line*)*;
