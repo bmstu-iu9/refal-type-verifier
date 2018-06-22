@@ -11,4 +11,8 @@ public class SimpleType {
         this.parrent = parrent;
         return this;
     }
+
+    public boolean equal(SimpleType simpleType) {
+        return ((FixedType)simpleType).getTerms().get(0).equals(((FixedType)this).getTerms().get(0));
+    }
 }

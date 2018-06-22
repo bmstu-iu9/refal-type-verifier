@@ -3,6 +3,7 @@ package StaticVerificator;
 import RefalInterpritator.Tokens.*;
 import VerificatorInterpritator.Tokens.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ public class PatternMatching {
                 return false;
             }
             isRight = true;
-            System.out.println(connection);
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
             }
@@ -44,7 +44,6 @@ public class PatternMatching {
                 return true;
             }
         }
-        System.out.println("1");
         return false;
     }
 
@@ -59,10 +58,13 @@ public class PatternMatching {
 
     public boolean matchExpressionAndSimpleType(List<Term> expression, SimpleType simpleType) {
         if (simpleType instanceof FixedType) {
+            FixedType variable;
             for (int i = 0; i < expression.size(); i++) {
                 types.forEach(type -> isUsed.put(type, false));
-                if (!matchTermAndTermType(expression.get(i), simpleType)) {
-                    System.out.println("Can't match term with simpleType: " + expression.get(i));
+                variable = new FixedType();
+                variable.getTerms().add(((FixedType)simpleType).getTerms().get(i));
+                if (!matchTermAndTermType(expression.get(i), variable)) {
+                    System.out.println("Can't match term with simpleType: " + expression.get(i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
                     return false;
                 }
             }
@@ -115,7 +117,9 @@ public class PatternMatching {
                         break;
                     }
                 }
-                return j != functions.size() && matchExpressionAndSimpleType(((CallBrackets) term).getContent(), functions.get(j).getArgument());
+                return j != functions.size()
+                        && matchLeftPart(new Expression().setTerms(((CallBrackets) term).getContent()), functions.get(j).getArgument())
+                        && checkFunctionResult(functions.get(j).getResult(), simpleType);
             }
         }
         return false;
@@ -138,6 +142,16 @@ public class PatternMatching {
             }
         }
         System.out.println("Can't match term with termType: " + symbol);
+        return false;
+    }
+
+    private boolean checkFunctionResult(List<SimpleType> result, SimpleType pattern) {
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i).equal(pattern)) {
+                return true;
+            }
+        }
+        System.out.println("Wrong function result: found " + result + " but expected " + pattern);
         return false;
     }
 }

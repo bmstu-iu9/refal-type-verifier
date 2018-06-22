@@ -13,9 +13,9 @@ public class Brackets extends TermType {
     }
 
     public String toString() {
-        final String[] ans = {"!("};
+        final String[] ans = {"("};
         ans[0] += content.toString();
-        ans[0] += ")!";
+        ans[0] += ")";
         return ans[0];
     }
 }

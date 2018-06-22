@@ -1,4 +1,14 @@
 Sum {
   (S t.X) t.Y = <Sum t.X (S t.Y)>;
-  NULL t.Y = t.Y;
+  NULL = t.Y;
+}
+
+Mul1 {
+  NULL t.Y = NULL;
+  (S t.X) t.Y = <Sum <Mul1 t.X> t.Y>;
+}
+
+$ENTRY Fact {
+  NULL = (S NULL);
+  (S t.Num) = <Mul1 <Fact t.Num> (S t.Num)>;
 }

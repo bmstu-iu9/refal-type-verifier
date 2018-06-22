@@ -55,10 +55,7 @@ public class Type {
 
     @Override
     public String toString() {
-        return "Type{" +
-                "mode=" + mode +
-                ", name='" + name + '\'' +
-                ", constructors=" + constructors +
-                '}';
+        return "" + mode +
+                "." + name;
     }
 }

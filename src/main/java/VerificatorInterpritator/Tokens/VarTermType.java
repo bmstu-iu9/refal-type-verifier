@@ -49,9 +49,27 @@ public class VarTermType extends TermType{
 
     @Override
     public String toString() {
-        return "VarTermType{" +
-                "mode=" + mode +
-                ", name='" + name + '\'' +
-                '}';
+        return "" + mode +
+                "." + name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VarTermType that = (VarTermType) o;
+
+        if (mode != that.mode) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return ref != null ? ref.equals(that.ref) : that.ref == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mode.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (ref != null ? ref.hashCode() : 0);
+        return result;
     }
 }

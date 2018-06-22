@@ -1,6 +1,6 @@
+t.Yum ::= NULL | s.ANY;
 t.Num ::= NULL | (S t.Num);
-t.Yum ::= s.ANY;
 
-<Sum t.Num t.Yum> == t.Num;
-<Mul1 t.Num t.Yum> == t.Num;
+<Sum t.Num t.Num> == t.Num;
+<Mul1 t.Num t.Num> == t.Num;
 <Fact t.Num> == t.Num;
