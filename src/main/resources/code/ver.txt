@@ -1,3 +1,4 @@
 e.ABC ::= A B C;
+t.Num ::= t.NUMBER;
 
 <F e.ABC> == e.ABC;

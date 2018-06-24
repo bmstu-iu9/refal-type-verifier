@@ -13,8 +13,10 @@ public class PatternMatching {
     private List<Function> functions;
     private List<Type> types;
     private Map<Type, Boolean> isUsed;
-    private Map<Variable, PseudoType> connection;
+    private Map<Term, PseudoType> connection;
     private boolean isRight = false;
+    private int indexForOpen = 0;
+    private int refIndex = 0;
 
     public PatternMatching(List<Function> functions, List<Type> types) {
         this.functions = functions;
@@ -66,7 +68,7 @@ public class PatternMatching {
                 j = i;
                 variable = new FixedType();
                 PseudoType save = null;
-                variable.getTerms().add(((FixedType)simpleType).getTerms().get(j));
+                variable.getTerms().add(((FixedType)simpleType).getTerms().get(j - indexForOpen));
                 if (expression.get(i) instanceof Variable && ((Variable)expression.get(i)).getType().equals(Mode.E)) {
                     if (isRight) {
                         save = new PseudoType().setTypes(connection.get((Variable) expression.get(i)).getTypes());
@@ -97,10 +99,18 @@ public class PatternMatching {
                 }
             }
         }
-        if (i != ((FixedType)simpleType).getTerms().size()) {
+//        System.out.println(((FixedType)simpleType).getTerms().get());
+        System.out.println(simpleType);
+        System.out.println(((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size());
+        System.out.println(indexForOpen);
+        System.out.println(refIndex);
+        if ((indexForOpen == 0 && i != ((FixedType)simpleType).getTerms().size())
+                || (indexForOpen != 0 && indexForOpen != ((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size())) {
             System.out.println("Invalid number of variables " + simpleType + " and " + expression);
             return false;
         }
+        indexForOpen = 0;
+        refIndex = 0;
         return true;
     }
 
@@ -119,7 +129,16 @@ public class PatternMatching {
             }
             if (term instanceof CompoundSymbol) {
                 if (termTypes.get(i) instanceof Compound) {
-                    return true;
+                    if (!isRight) {
+                        connection.put(term, new PseudoType());
+                        connection.get(term).getTypes().add(termTypes.get(i));
+                        return true;
+                    } else {
+                        if (!connection.containsKey(term)) {
+                            return false;
+                        }
+                        return connection.get(term).getTypes().get(0).equals(termTypes.get(i));
+                    }
                 } else if (termTypes.get(i) instanceof VarTermType) {
                     if (matchTermAndVarTerm(term, (VarTermType) termTypes.get(i))) {
                         return true;
@@ -182,25 +201,18 @@ public class PatternMatching {
         }
         List<Term> terms = new ArrayList<>();
         terms.add(symbol);
-        SimpleType simpleType;
-        for (int i = 0; i < varTermType.getRef().getConstructors().size(); i++) {
-            simpleType = varTermType.getRef().getConstructors().get(i);
-            if (matchTermAndTermType(symbol, simpleType)) {
-                System.out.println("????");
-                return true;
-            }
-            if (simpleType instanceof FixedType) {
-                int j = 0;
-                for (j = 0; j < ((FixedType) simpleType).getTerms().size(); j++) {
-                    FixedType fixedType = new FixedType();
-                    fixedType.getTerms().add(((FixedType) simpleType).getTerms().get(j));
-                    if (!matchExpressionAndSimpleType(terms, fixedType)) {
-                        break;
-                    }
+        FixedType variable;
+        for (int i = refIndex; i < varTermType.getRef().getConstructors().size(); i++) {
+            variable = new FixedType();
+            if (((FixedType)varTermType.getRef().getConstructors().get(i)).getTerms().size() > indexForOpen) {
+                variable.getTerms().add(((FixedType) varTermType.getRef().getConstructors().get(i)).getTerms().get(indexForOpen));
+                if (matchTermAndTermType(symbol, variable)) {
+                    indexForOpen++;
+                    return true;
                 }
-//                if (j != ((FixedType) simpleType).getTerms().size())
-                return true;
             }
+            indexForOpen = 0;
+            refIndex++;
         }
         System.out.println("Can't match term with termType: " + symbol);
         return false;
