@@ -13,7 +13,7 @@ public class PatternMatching {
     private List<Function> functions;
     private List<Type> types;
     private Map<Type, Boolean> isUsed;
-    private Map<Variable, Type> connection;
+    private Map<Variable, PseudoType> connection;
     private boolean isRight = false;
 
     public PatternMatching(List<Function> functions, List<Type> types) {
@@ -48,22 +48,50 @@ public class PatternMatching {
     }
 
     public boolean matchLeftPart(Expression expression, SimpleType argument) {
-        if (argument instanceof FixedType && expression.getTerms().size() != ((FixedType)argument).getTerms().size())
-        {
-            System.out.println("Invalid number of arguments");
-            return false;
-        }
+//        if (argument instanceof FixedType && expression.getTerms().size() != ((FixedType)argument).getTerms().size())
+//        {
+//            System.out.println("Invalid number of arguments");
+//            return false;
+//        }
         return matchExpressionAndSimpleType(expression.getTerms(), argument);
     }
 
     public boolean matchExpressionAndSimpleType(List<Term> expression, SimpleType simpleType) {
+        int i = 0;
+        int j = 0;
         if (simpleType instanceof FixedType) {
             FixedType variable;
-            for (int i = 0; i < expression.size(); i++) {
+            for (i = 0; i < expression.size(); i++) {
                 types.forEach(type -> isUsed.put(type, false));
+                j = i;
                 variable = new FixedType();
-                variable.getTerms().add(((FixedType)simpleType).getTerms().get(i));
-                if (!matchTermAndTermType(expression.get(i), variable)) {
+                PseudoType save = null;
+                variable.getTerms().add(((FixedType)simpleType).getTerms().get(j));
+                if (expression.get(i) instanceof Variable && ((Variable)expression.get(i)).getType().equals(Mode.E)) {
+                    if (isRight) {
+                        save = new PseudoType().setTypes(connection.get((Variable) expression.get(i)).getTypes());
+                    }
+                    while (matchTermAndTermType(expression.get(i), variable)){
+                        j++;
+                        if (isRight) {
+                            connection.get((Variable) expression.get(i)).getTypes().remove(0);
+                        }
+                        if (j == ((FixedType)simpleType).getTerms().size()) {
+                            if (isRight) {
+                                if (connection.get((Variable) expression.get(i)).getTypes().size()!= 0) {
+                                    System.out.println("Invalid nuber of variables " + simpleType + " and " + save);
+                                    return false;
+                                }
+                                connection.put((Variable) expression.get(i), save);
+                            }
+                            return true;
+                        }
+                        variable = new FixedType();
+                        variable.getTerms().add(((FixedType)simpleType).getTerms().get(j));
+                    }
+                    System.out.println("Cant match " + expression + " and " + simpleType);
+                    return false;
+                } else if (!matchTermAndTermType(expression.get(i), variable)) {
                     System.out.println("Can't match term with simpleType: " + expression.get(i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
                     return false;
                 }
@@ -73,6 +101,7 @@ public class PatternMatching {
     }
 
     public boolean matchTermAndTermType(Term term, SimpleType simpleType) {
+
         List<TermType> termTypes = ((FixedType)simpleType).getTerms();
         for (int i = 0; i < termTypes.size(); i++) {
             if (term instanceof StructBrackets) {
@@ -98,14 +127,26 @@ public class PatternMatching {
             if (term instanceof Variable) {
                 if (termTypes.get(i) instanceof VarTermType) {
                     if (isRight) {
-                        return connection.getOrDefault((Variable) term, new Type()).equals(((VarTermType) termTypes.get(i)).getRef());
+                        return connection.getOrDefault(term, null).getTypes().get(0).equals(termTypes.get(i));
                     } else {
-                        {
-                            if (((Variable) term).equals((VarTermType) termTypes.get(i))) {
-                                connection.put((Variable) term, ((VarTermType) termTypes.get(i)).getRef());
+                        if (((Variable) term).equals((VarTermType) termTypes.get(i))) {
+                            if (!connection.containsKey((Variable) term)) {
+                                connection.put((Variable) term, new PseudoType());
                             }
-                            return ((Variable) term).equals((VarTermType) termTypes.get(i));
+                            connection.get((Variable) term).getTypes().add(termTypes.get(i));
                         }
+                        return ((Variable) term).equals((VarTermType) termTypes.get(i));
+                    }
+                }
+                if (termTypes.get(i) instanceof Compound) {
+                    if (isRight) {
+                        return connection.getOrDefault((Variable) term, null).getTypes().size() != 0 && connection.getOrDefault((Variable) term, null).getTypes().get(0).equals(termTypes.get(i));
+                    } else {
+                        if (!connection.containsKey((Variable) term)) {
+                            connection.put((Variable) term, new PseudoType());
+                        }
+                        connection.get((Variable) term).getTypes().add(termTypes.get(i));
+                        return true;
                     }
                 }
                 continue;

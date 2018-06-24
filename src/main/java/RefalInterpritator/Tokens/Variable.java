@@ -53,4 +53,8 @@ public class Variable extends Term {
                 break;
         }
     }
+
+    public Mode getType() {
+        return type;
+    }
 }
