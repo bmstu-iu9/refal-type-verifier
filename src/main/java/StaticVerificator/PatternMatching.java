@@ -75,32 +75,21 @@ public class PatternMatching {
                 types.forEach(type -> isUsed.put(type, false));
                 j = i;
                 variable = new FixedType();
-                PseudoType save = null;
                 variable.getTerms().add(((FixedType)simpleType).getTerms().get(j - indexForOpen));
                 if (expression.get(i) instanceof Variable && ((Variable)expression.get(i)).getType().equals(Mode.E)) {
-                    if (isRight) {
-                        save = new PseudoType().setTypes(connection.get((Variable) expression.get(i)).getTypes());
-                    }
-                    while (matchTermAndTermType(expression.get(i), variable)){
-                        j++;
-                        if (isRight) {
-                            connection.get((Variable) expression.get(i)).getTypes().remove(0);
-                        }
-                        if (j == ((FixedType)simpleType).getTerms().size()) {
-                            if (isRight) {
-                                if (connection.get((Variable) expression.get(i)).getTypes().size()!= 0) {
-                                    System.out.println("Invalid/ number of variables " + simpleType + " and " + save);
-                                    return false;
-                                }
-                                connection.put((Variable) expression.get(i), save);
+                    if (expression.size() > i + 1) {
+                        int m = 0;
+                        for (int k = expression.size() - 1; k > i; k--) {
+                            variable = new FixedType();
+                            variable.getTerms().add(((FixedType)simpleType).getTerms().get(((FixedType)simpleType).getTerms().size() - 1 - m));
+                            if(!matchTermAndTermType(expression.get(k), variable)) {
+                                System.out.println("Can't match term with simpleType: " + expression.get(k) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
+                                return false;
                             }
-                            return true;
+                            m++;
                         }
-                        variable = new FixedType();
-                        variable.getTerms().add(((FixedType)simpleType).getTerms().get(j));
                     }
-                    System.out.println("Cant match " + expression + " and " + simpleType);
-                    return false;
+                    return workWithE(expression.get(i), simpleType, j);
                 } else if (!matchTermAndTermType(expression.get(i), variable)) {
                     System.out.println("Can't match term with simpleType: " + expression.get(i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
                     return false;
@@ -120,6 +109,7 @@ public class PatternMatching {
 
     private boolean workWithE(Term expression, SimpleType simpleType, int j) {
         FixedType variable = new FixedType();
+        variable.getTerms().add(((FixedType)simpleType).getTerms().get(j - indexForOpen));
         PseudoType save = null;
         if (isRight) {
             save = new PseudoType().setTypes(connection.get((Variable) expression).getTypes());
