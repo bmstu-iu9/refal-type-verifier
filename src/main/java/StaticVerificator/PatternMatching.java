@@ -36,7 +36,6 @@ public class PatternMatching {
             if (!matchLeftPart(definition.getSentences().get(i).getPattern(), function.getArgument())) {
                 return false;
             }
-            System.out.println("&&&&&&&");
             isRight = true;
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
@@ -65,8 +64,8 @@ public class PatternMatching {
     }
 
     public boolean matchExpressionAndSimpleType(List<Term> expression, SimpleType simpleType) {
-        if (expression.size() == 0) {
-            return simpleType instanceof FixedType && ((FixedType) simpleType).getTerms().size() == 0;
+        if (expression.size() == 0 && simpleType instanceof FixedType) {
+            return ((FixedType) simpleType).getTerms().size() == 0;
         }
         if (simpleType instanceof FixedType) {
             int i = 0;
