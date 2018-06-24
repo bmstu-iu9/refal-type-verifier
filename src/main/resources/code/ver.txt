@@ -1,4 +1,6 @@
-e.ABC ::= A B C;
-t.Num ::= t.NUMBER;
+t.Yum ::= NULL | s.ANY;
+t.Num ::= NULL | (S t.Num);
 
-<F e.ABC> == e.ABC;
+<Sum t.Num t.Num> == t.Num;
+<Mul1 t.Num t.Num> == t.Yum;
+<Fact t.Num> == t.Num;

@@ -1,1 +1,4 @@
-F { A B C = A B C; }
+$ENTRY Fact {
+  NULL = (S NULL);
+  (S t.Num) = <Mul1 <Fact t.Num> (S t.Num)>;
+}

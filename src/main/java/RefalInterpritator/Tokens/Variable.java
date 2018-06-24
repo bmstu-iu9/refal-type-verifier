@@ -57,4 +57,8 @@ public class Variable extends Term {
     public Mode getType() {
         return type;
     }
+
+    public String getIndex() {
+        return index;
+    }
 }

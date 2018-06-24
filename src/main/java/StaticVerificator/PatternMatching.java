@@ -26,12 +26,18 @@ public class PatternMatching {
     }
 
     public boolean match(Definition definition, Function function) {
+        connection.clear();
+        isUsed.clear();
+        indexForOpen = 0;
+        refIndex = 0;
+        isRight = false;
         for (int i = 0; i < definition.getSentences().size(); i++) {
             isRight = false;
             if (!matchLeftPart(definition.getSentences().get(i).getPattern(), function.getArgument())) {
                 return false;
             }
             isRight = true;
+            System.out.println("!!!!");
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
             }
@@ -63,6 +69,9 @@ public class PatternMatching {
         int j = 0;
         if (simpleType instanceof FixedType) {
             FixedType variable;
+            if (((FixedType)simpleType).getTerms().get(0) instanceof VarTermType &&  ((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().equals(new Type("e.ANY"))) {
+                return true;
+            }
             for (i = 0; i < expression.size(); i++) {
                 types.forEach(type -> isUsed.put(type, false));
                 j = i;
@@ -81,7 +90,7 @@ public class PatternMatching {
                         if (j == ((FixedType)simpleType).getTerms().size()) {
                             if (isRight) {
                                 if (connection.get((Variable) expression.get(i)).getTypes().size()!= 0) {
-                                    System.out.println("Invalid number of variables " + simpleType + " and " + save);
+                                    System.out.println("Invalid/ number of variables " + simpleType + " and " + save);
                                     return false;
                                 }
                                 connection.put((Variable) expression.get(i), save);
@@ -100,13 +109,9 @@ public class PatternMatching {
             }
         }
 //        System.out.println(((FixedType)simpleType).getTerms().get());
-        System.out.println(simpleType);
-        System.out.println(((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size());
-        System.out.println(indexForOpen);
-        System.out.println(refIndex);
         if ((indexForOpen == 0 && i != ((FixedType)simpleType).getTerms().size())
                 || (indexForOpen != 0 && indexForOpen != ((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size())) {
-            System.out.println("Invalid number of variables " + simpleType + " and " + expression);
+            System.out.println("Invalid// number of variables " + simpleType + " and " + expression);
             return false;
         }
         indexForOpen = 0;
@@ -126,6 +131,9 @@ public class PatternMatching {
                     }
                 }
                 continue;
+            }
+            if (term instanceof Macrodigit) {
+                return termTypes.get(i) instanceof VarTermType && ((VarTermType) termTypes.get(i)).getName().equals("NUMBER");
             }
             if (term instanceof CompoundSymbol) {
                 if (termTypes.get(i) instanceof Compound) {

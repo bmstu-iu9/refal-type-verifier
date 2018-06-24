@@ -58,4 +58,22 @@ public class Type {
         return "" + mode +
                 "." + name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Type type = (Type) o;
+
+        if (mode != type.mode) return false;
+        return name.equals(type.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mode.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }
