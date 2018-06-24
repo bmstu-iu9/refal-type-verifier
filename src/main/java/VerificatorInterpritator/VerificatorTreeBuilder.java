@@ -171,6 +171,7 @@ public class VerificatorTreeBuilder extends parser {
                           }
                       }
                   }
+                  break;
               case sym.QUOTEDSTRING:
               case sym.INTEGER_LITERAL:
                   if (isStr.peek()) {
