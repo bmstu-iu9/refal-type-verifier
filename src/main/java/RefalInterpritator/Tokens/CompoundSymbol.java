@@ -1,5 +1,7 @@
 package RefalInterpritator.Tokens;
 
+import VerificatorInterpritator.Tokens.Compound;
+
 public class CompoundSymbol extends Term {
     private String value;
 
@@ -14,6 +16,9 @@ public class CompoundSymbol extends Term {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o instanceof Compound) {
+            return ((Compound) o).getValue().equals(value);
+        }
         if (o == null || getClass() != o.getClass()) return false;
 
         CompoundSymbol that = (CompoundSymbol) o;

@@ -36,6 +36,7 @@ public class PatternMatching {
             if (!matchLeftPart(definition.getSentences().get(i).getPattern(), function.getArgument())) {
                 return false;
             }
+            System.out.println("&&&&&&&");
             isRight = true;
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
@@ -64,9 +65,12 @@ public class PatternMatching {
     }
 
     public boolean matchExpressionAndSimpleType(List<Term> expression, SimpleType simpleType) {
-        int i = 0;
-        int j = 0;
+        if (expression.size() == 0) {
+            return simpleType instanceof FixedType && ((FixedType) simpleType).getTerms().size() == 0;
+        }
         if (simpleType instanceof FixedType) {
+            int i = 0;
+            int j = 0;
             FixedType variable;
             if (((FixedType)simpleType).getTerms().get(0) instanceof VarTermType &&  ((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().equals(new Type("e.ANY"))) {
                 return true;
@@ -95,16 +99,54 @@ public class PatternMatching {
                     return false;
                 }
             }
+            if ((indexForOpen == 0 && i != ((FixedType)simpleType).getTerms().size())
+                    || (indexForOpen != 0 && indexForOpen != ((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size())) {
+                System.out.println("Invalid// number of variables " + simpleType + " and " + expression);
+                return false;
+            }
+            indexForOpen = 0;
+            refIndex = 0;
+            return true;
         }
-//        System.out.println(((FixedType)simpleType).getTerms().get());
-        if ((indexForOpen == 0 && i != ((FixedType)simpleType).getTerms().size())
-                || (indexForOpen != 0 && indexForOpen != ((FixedType)((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().getConstructors().get(refIndex)).getTerms().size())) {
-            System.out.println("Invalid// number of variables " + simpleType + " and " + expression);
+        if (simpleType instanceof StretchType) {
+            if(((StretchType)simpleType).getLeft().size() == 0 || matchExpressionAndSimpleType(expression, new FixedType().setTerms(((StretchType)simpleType).getLeft()))) {
+                if (((StretchType)simpleType).getRight().size() == 0 || matchRightStretch(expression, ((StretchType)simpleType).getRight())) {
+                    return matchStretch(expression, ((StretchType)simpleType).getStretch());
+                }
+            }
             return false;
         }
-        indexForOpen = 0;
-        refIndex = 0;
         return true;
+    }
+
+    private boolean matchStretch(List<Term> expression, TermType stretchTerm) {
+        FixedType variable = new FixedType();
+        variable.getTerms().add(stretchTerm);
+        for (int i = 0; i < expression.size(); i++) {
+            if (!matchTermAndTermType(expression.get(i), variable)) {
+                System.out.println("Cant match stretch " + stretchTerm + " and " + expression);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean matchRightStretch(List<Term> expression, List<TermType> simpleType) {
+        int i;
+        if ((simpleType.get(0) instanceof VarTermType &&  ((VarTermType)simpleType.get(0)).getRef().equals(new Type("e.ANY")))) {
+            return true;
+        }
+        FixedType variable;
+        for (i = 0; i < simpleType.size() && i < expression.size(); i++) {
+            types.forEach(type -> isUsed.put(type, false));
+            variable = new FixedType();
+            variable.getTerms().add(simpleType.get(simpleType.size() - 1 - i));
+            if (!matchTermAndTermType(expression.get(expression.size() - 1 - i), variable)) {
+                System.out.println("Can't match term with simpleType: " + expression.get(expression.size() - 1 - i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
+                return false;
+            }
+        }
+        return i == simpleType.size();
     }
 
     private boolean workWithE(Term expression, SimpleType simpleType, int j) {
@@ -160,7 +202,7 @@ public class PatternMatching {
                         return true;
                     } else {
                         if (!connection.containsKey(term)) {
-                            return false;
+                            return term.equals(termTypes.get(i));
                         }
                         return connection.get(term).getTypes().get(0).equals(termTypes.get(i));
                     }

@@ -7,6 +7,10 @@ public class Compound extends Symbol{
         this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     public String toString() {
         return value;
     }
