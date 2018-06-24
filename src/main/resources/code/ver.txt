@@ -1,1 +1,3 @@
-<Test (A B) (C D)> == A C B D;
+e.ABC ::= A B C;
+
+<F e.ABC> == e.ABC;

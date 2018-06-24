@@ -56,16 +56,14 @@ stretch_type ::= term_type MANY term_type {:RESULT = new Node("MANY", -1);:}
              | term_type ATLEAST;
 
 term_type ::= end_type
-          | end_type term_type
-          | LPAREN simple_type RPAREN {:RESULT = new Node("PARENS", -1);:}
-          | LPAREN simple_type RPAREN MANY {:RESULT = new Node("PARENS", -1);:}
-          | LPAREN simple_type RPAREN ATLEAST {:RESULT = new Node("PARENS", -1);:};
+          | end_type term_type;
 
 end_type ::= VARIABLE:st {:RESULT = new Node(st.name, st.start);:}
            | METAVARIABLE:st {:RESULT = new Node(st.name, st.start);:}
            | NAME:st {:RESULT = new Node(st.name, st.start);:}
            | INTEGER_LITERAL:st {:RESULT = new Node(st.name, st.start);:}
-           | QUOTEDSTRING:st {:RESULT = new Node(st.name, st.start);:};
+           | QUOTEDSTRING:st {:RESULT = new Node(st.name, st.start);:}
+           | LPAREN simple_type RPAREN {:RESULT = new Node("PARENS", -1);:};
 
 
 func ::= LCHEVRON NAME args_type RCHEVRON res SEMICOLON {:RESULT = new Node("FUNC", -1);:};
