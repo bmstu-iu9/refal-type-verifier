@@ -171,9 +171,13 @@ public class VerificatorTreeBuilder extends parser {
                           }
                       }
                   }
-              case sym.METAVARIABLE:
               case sym.QUOTEDSTRING:
               case sym.INTEGER_LITERAL:
+                  if (isStr.peek()) {
+                      ((StretchType)currentSimple.getLastSimpleType()).getRight().add(new Compound(((LexerToken)cur_token.value).name));
+                  } else {
+                      ((StretchType)currentSimple.getLastSimpleType()).getLeft().add(new Compound(((LexerToken)cur_token.value).name));
+                  }
                   // ???
 //                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));
 //                  curNode.addChild(new VerificatorNode((LexerToken)cur_token.value).setParen(curNode));

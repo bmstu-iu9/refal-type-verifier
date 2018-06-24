@@ -37,7 +37,6 @@ public class PatternMatching {
                 return false;
             }
             isRight = true;
-            System.out.println("!!!!");
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
             }
@@ -117,6 +116,34 @@ public class PatternMatching {
         indexForOpen = 0;
         refIndex = 0;
         return true;
+    }
+
+    private boolean workWithE(Term expression, SimpleType simpleType, int j) {
+        FixedType variable = new FixedType();
+        PseudoType save = null;
+        if (isRight) {
+            save = new PseudoType().setTypes(connection.get((Variable) expression).getTypes());
+        }
+        while (matchTermAndTermType(expression, variable)){
+            j++;
+            if (isRight) {
+                connection.get((Variable) expression).getTypes().remove(0);
+            }
+            if (j == ((FixedType)simpleType).getTerms().size()) {
+                if (isRight) {
+                    if (connection.get((Variable) expression).getTypes().size()!= 0) {
+                        System.out.println("Invalid/ number of variables " + simpleType + " and " + save);
+                        return false;
+                    }
+                    connection.put((Variable) expression, save);
+                }
+                return true;
+            }
+            variable = new FixedType();
+            variable.getTerms().add(((FixedType)simpleType).getTerms().get(j));
+        }
+        System.out.println("Cant match " + expression + " and " + simpleType);
+        return false;
     }
 
     public boolean matchTermAndTermType(Term term, SimpleType simpleType) {
