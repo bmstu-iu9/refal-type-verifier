@@ -1,2 +1,3 @@
-s.AB ::= A | B;
-<F B> == s.AB;
+e.Alt ::= As A* | Bs B*;
+
+<F e.Alt> ::= e.Alt;

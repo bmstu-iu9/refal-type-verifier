@@ -1,1 +1,3 @@
-F { s.X = s.X; }
+F {
+  s.Code e.Items = s.Code e.Items;
+}

@@ -71,6 +71,10 @@ public class PatternMatching {
             int i = 0;
             int j = 0;
             FixedType variable;
+            if (((FixedType)simpleType).getTerms().size() == 0) {
+                System.out.println("Arguments should not exist");
+                return false;
+            }
             if (((FixedType)simpleType).getTerms().get(0) instanceof VarTermType &&  ((VarTermType)((FixedType)simpleType).getTerms().get(0)).getRef().equals(new Type("e.ANY"))) {
                 return true;
             }
