@@ -94,8 +94,10 @@ public class PatternMatching {
                     }
                     return workWithE(expression.get(i), simpleType, j);
                 } else if (!matchTermAndTermType(expression.get(i), variable)) {
-                    System.out.println("Can't match term with simpleType: " + expression.get(i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
-                    return false;
+                    if (!checkInVariable(simpleType, connection.getOrDefault(expression.get(i), null))) {
+                        System.out.println("Can't match term with simpleType: " + expression.get(i) + " expected " + simpleType + " but found " + connection.getOrDefault(expression.get(i), null));
+                        return false;
+                    }
                 }
             }
             if ((indexForOpen == 0 && i != ((FixedType)simpleType).getTerms().size())
@@ -118,11 +120,31 @@ public class PatternMatching {
         return true;
     }
 
+    private boolean checkInVariable(SimpleType simpleType, PseudoType pseudoType) {
+        if (pseudoType == null) {
+            return false;
+        }
+        if (((FixedType) simpleType).getTerms().get(0) instanceof VarTermType) {
+            Type type = ((VarTermType)((FixedType) simpleType).getTerms().get(0)).getRef();
+            for (int i = 0; i < type.getConstructors().size(); i++) {
+                if (pseudoType.getTypes().get(0).equals(((FixedType)type.getConstructors().get(i)).getTerms().get(0))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean matchStretch(List<Term> expression, TermType stretchTerm) {
         FixedType variable = new FixedType();
         variable.getTerms().add(stretchTerm);
         for (int i = 0; i < expression.size(); i++) {
             if (!matchTermAndTermType(expression.get(i), variable)) {
+                if (expression.get(i) instanceof Variable && ((Variable) expression.get(i)).getType().equals(Mode.E)) {
+                    connection.put(expression.get(i), new PseudoType());
+                    connection.get(expression.get(i)).getTypes().add(stretchTerm);
+                    return true;
+                }
                 System.out.println("Cant match stretch " + stretchTerm + " and " + expression);
                 return false;
             }
@@ -259,12 +281,12 @@ public class PatternMatching {
             System.out.println("Can't match term with termType: " + symbol);
             return false;
         }
-        if (!isUsed.get(varTermType.getRef())) {
-            isUsed.put(varTermType.getRef(), true);
-        } else {
-            System.out.println("Can't match term with termType: " + symbol);
-            return false;
-        }
+//        if (!isUsed.containsKey(varTermType.getRef()) || !isUsed.get(varTermType.getRef())) {
+//            isUsed.put(varTermType.getRef(), true);
+//        } else {
+//            System.out.println("Can't match term with termType!: " + symbol);
+//            return false;
+//        }
         List<Term> terms = new ArrayList<>();
         terms.add(symbol);
         FixedType variable;

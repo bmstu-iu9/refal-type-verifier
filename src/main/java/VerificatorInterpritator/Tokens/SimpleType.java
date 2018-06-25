@@ -13,6 +13,9 @@ public class SimpleType {
     }
 
     public boolean equal(SimpleType simpleType) {
+        if (this instanceof StretchType) {
+            return ((StretchType) this).getStretch().equals(((FixedType)simpleType).getTerms().get(0));
+        }
         return ((FixedType)simpleType).getTerms().get(0).equals(((FixedType)this).getTerms().get(0));
     }
 }
