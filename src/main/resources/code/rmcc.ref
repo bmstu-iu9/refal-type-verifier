@@ -1,3 +1,16 @@
-F {
-  s.Code e.Items = s.Code e.Items;
+Fab {
+  e.X A = <Fab e.X> B;
+  e.X B = <Fab e.X> B;
+  e.X C = <Fab e.X> C;
+  = ;
+}
+
+Fbc {
+  B e.X = C <Fbc e.X>;
+  C e.X = C <Fbc e.X>;
+  = ;
+}
+
+Fac {
+  e.X = <Fbc <Fab e.X>>;
 }

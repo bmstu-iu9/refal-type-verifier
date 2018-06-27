@@ -1,3 +1,8 @@
-e.Alt ::= As A* | Bs B*;
+s.ABC ::= A | B | C;
+s.BC ::= B | C;
+<Fab s.ABC*> == s.BC*;
 
-<F e.Alt> ::= e.Alt;
+s.C ::= C;
+<Fbc s.BC*> == s.C*;
+
+<Fac s.ABC*> == s.C*;

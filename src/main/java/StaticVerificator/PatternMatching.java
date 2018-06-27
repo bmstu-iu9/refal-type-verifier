@@ -36,11 +36,15 @@ public class PatternMatching {
             if (!matchLeftPart(definition.getSentences().get(i).getPattern(), function.getArgument())) {
                 return false;
             }
+            indexForOpen = 0;
+            refIndex = 0;
             isRight = true;
             if (!matchRightPart(definition.getSentences().get(i).getResult(), function.getResult())) {
                 return false;
             }
             connection.clear();
+            indexForOpen = 0;
+            refIndex = 0;
         }
         return true;
     }
@@ -142,6 +146,7 @@ public class PatternMatching {
     private boolean matchStretch(List<Term> expression, TermType stretchTerm) {
         FixedType variable = new FixedType();
         variable.getTerms().add(stretchTerm);
+        int saveIndexForOpen = indexForOpen;
         for (int i = 0; i < expression.size(); i++) {
             if (!matchTermAndTermType(expression.get(i), variable)) {
                 if (expression.get(i) instanceof Variable && ((Variable) expression.get(i)).getType().equals(Mode.E)) {
@@ -152,6 +157,9 @@ public class PatternMatching {
                 System.out.println("Cant match stretch " + stretchTerm + " and " + expression);
                 return false;
             }
+            connection.put(expression.get(i), new PseudoType());
+            connection.get(expression.get(i)).getTypes().add(stretchTerm);
+            indexForOpen = saveIndexForOpen;
         }
         return true;
     }
@@ -229,6 +237,9 @@ public class PatternMatching {
                         if (!connection.containsKey(term)) {
                             return term.equals(termTypes.get(i));
                         }
+                        if (connection.get(term).getTypes().get(0) instanceof VarTermType) {
+                            return matchCompoundAndVarTerm((Compound) termTypes.get(i), ((VarTermType)connection.get(term).getTypes().get(0)));
+                        }
                         return connection.get(term).getTypes().get(0).equals(termTypes.get(i));
                     }
                 } else if (termTypes.get(i) instanceof VarTermType) {
@@ -280,17 +291,20 @@ public class PatternMatching {
         return false;
     }
 
+    private boolean matchCompoundAndVarTerm(Compound compound, VarTermType varTermType) {
+        for (int i = 0; i < varTermType.getRef().getConstructors().size(); i++) {
+            if (compound.equals(((FixedType)varTermType.getRef().getConstructors().get(i)).getTerms().get(0))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean matchTermAndVarTerm(Term symbol, VarTermType varTermType) {
         if(varTermType.getRef().getConstructors() == null) {
             System.out.println("Can't match term with termType: " + symbol);
             return false;
         }
-//        if (!isUsed.containsKey(varTermType.getRef()) || !isUsed.get(varTermType.getRef())) {
-//            isUsed.put(varTermType.getRef(), true);
-//        } else {
-//            System.out.println("Can't match term with termType!: " + symbol);
-//            return false;
-//        }
         List<Term> terms = new ArrayList<>();
         terms.add(symbol);
         FixedType variable;
