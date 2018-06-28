@@ -1,16 +1,14 @@
-Fab {
-  e.X A = <Fab e.X> B;
-  e.X B = <Fab e.X> B;
-  e.X C = <Fab e.X> C;
-  = ;
+Sum {
+  (S t.X) t.Y = <Sum t.X (S t.Y)>;
+  NULL t.Y = t.Y;
 }
-
-Fbc {
-  B e.X = C <Fbc e.X>;
-  C e.X = C <Fbc e.X>;
-  = ;
+ 
+Mul1 {
+  NULL t.Y = NULL;
+  (S t.X) t.Y = <Sum <Mul1 t.X> t.Y>;
 }
-
-Fac {
-  e.X = <Fbc <Fab e.X>>;
-}
+ 
+$ENTRY Fact {
+  NULL = (S NULL);
+  (S t.Num) = <Mul1 <Fact t.Num> (S t.Num)>;
+  }

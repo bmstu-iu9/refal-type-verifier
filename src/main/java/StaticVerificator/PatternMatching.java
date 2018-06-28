@@ -252,6 +252,9 @@ public class PatternMatching {
             if (term instanceof Variable) {
                 if (termTypes.get(i) instanceof VarTermType) {
                     if (isRight) {
+                        if(connection.getOrDefault(term, null) == null) {
+                            return false;
+                        }
                         return connection.getOrDefault(term, null).getTypes().get(0).equals(termTypes.get(i));
                     } else {
                         if (((Variable) term).equals((VarTermType) termTypes.get(i))) {

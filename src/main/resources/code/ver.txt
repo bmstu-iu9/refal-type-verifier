@@ -1,8 +1,6 @@
-s.ABC ::= A | B | C;
-s.BC ::= B | C;
-<Fab s.ABC*> == s.BC*;
+t.Yum ::= s.ANY;
+t.Num ::= NULL | (S t.Num);
 
-s.C ::= C;
-<Fbc s.BC*> == s.C*;
-
-<Fac s.ABC*> == s.C*;
+<Sum t.Num t.Num> == t.Num;
+<Mul1 t.Num t.Num> == t.Num;
+<Fact t.Num> == t.Num;
